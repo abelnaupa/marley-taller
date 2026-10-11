@@ -12,50 +12,57 @@
       --text: #FFFFFF;
       --muted: #dedbd3;
       --border: #2a2d35;
+      --danger: #ff4d4d;
     }
     body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
     
     /* Header */
-    header { background: #141619; padding: 20px 30px; border-bottom: 2px solid var(--accent); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-    .brand { font-size: 20px; font-weight: 800; color: var(--accent); letter-spacing: 2px; }
+    header { background: #141619; padding: 18px 30px; border-bottom: 2px solid var(--accent); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+    .brand { font-size: 19px; font-weight: 800; color: var(--accent); letter-spacing: 2px; }
     .badge { border: 1px solid var(--accent); padding: 2px 6px; font-size: 11px; margin-left: 8px; color: #fff; }
-    nav a { color: var(--text); text-decoration: none; margin-left: 20px; font-weight: 600; font-size: 14px; }
+    nav a { color: var(--text); text-decoration: none; margin-left: 18px; font-weight: 600; font-size: 14px; cursor: pointer; }
     nav a:hover { color: var(--accent); }
 
+    .user-status-bar { background: #1a1d24; border-bottom: 1px solid var(--border); padding: 8px 30px; font-size: 13px; display: flex; justify-content: space-between; align-items: center; }
+
     /* Hero */
-    .hero { background: #141619; padding: 60px 20px; text-align: center; border-bottom: 1px solid var(--border); }
-    .hero h1 { font-size: 40px; margin: 0 0 10px; font-weight: 800; }
+    .hero { background: #141619; padding: 50px 20px; text-align: center; border-bottom: 1px solid var(--border); }
+    .hero h1 { font-size: 38px; margin: 0 0 10px; font-weight: 800; }
     .hero h1 span { color: var(--accent); }
-    .hero p { color: var(--muted); font-size: 18px; max-width: 700px; margin: 0 auto 25px; }
+    .hero p { color: var(--muted); font-size: 17px; max-width: 700px; margin: 0 auto 20px; }
 
     .btn { display: inline-block; background: var(--accent); color: #0E0F11; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 700; cursor: pointer; border: none; font-size: 15px; }
     .btn.secondary { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+    .btn.danger { background: var(--danger); color: #fff; padding: 6px 12px; font-size: 12px; }
     .btn:hover { opacity: 0.9; }
 
-    .container { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 35px 20px; }
 
-    /* Grilla de Modelos en el Home */
-    .section-title { color: var(--accent); letter-spacing: 2px; font-size: 14px; font-weight: 700; margin-bottom: 5px; }
-    .grid-models { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
-    .card-model { background: var(--card); border: 1px solid var(--border); border-top: 4px solid var(--accent); border-radius: 8px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; }
-    .card-model h3 { margin: 10px 0 6px; color: #fff; font-size: 20px; }
+    /* Grilla de Modelos */
+    .section-title { color: var(--accent); letter-spacing: 2px; font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+    .grid-models { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-top: 20px; }
+    .card-model { background: var(--card); border: 1px solid var(--border); border-top: 4px solid var(--accent); border-radius: 8px; padding: 22px; display: flex; flex-direction: column; justify-content: space-between; }
+    .card-model h3 { margin: 8px 0 6px; color: #fff; font-size: 19px; }
     .card-model p { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
 
-    /* Secciones Ocultas/Páginas Dinámicas */
+    /* Vistas Dinámicas */
     .view-page { display: none; }
     .view-page.active { display: block; }
 
-    /* Formulario */
-    .form-container { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 30px; max-width: 550px; margin: 0 auto; }
+    /* Formulario de Registro */
+    .form-card { background: var(--card); border: 1px solid var(--border); border-top: 4px solid var(--accent); border-radius: 10px; padding: 35px; max-width: 550px; margin: 0 auto; }
     .form-group { margin-bottom: 16px; }
     label { display: block; margin-bottom: 6px; font-size: 14px; color: var(--muted); }
-    input, select, textarea { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid var(--border); background: #0E0F11; color: #fff; box-sizing: border-box; }
+    input, select { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid var(--border); background: #0E0F11; color: #fff; box-sizing: border-box; font-size: 14px; }
 
-    /* Detalle de Industria en Landing */
-    .landing-header { background: #141619; border: 1px solid var(--accent); border-radius: 10px; padding: 30px; margin-bottom: 30px; }
+    /* Contenido Landings */
+    .landing-box { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 30px; margin-bottom: 25px; }
+    .landing-box.header { border-top: 5px solid var(--accent); }
     .feature-list { list-style: none; padding: 0; }
-    .feature-list li { padding: 8px 0; border-bottom: 1px solid var(--border); }
+    .feature-list li { padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 15px; }
     .feature-list li strong { color: var(--accent); }
+
+    .locked-banner { background: #2a1b00; border: 1px dashed var(--accent); padding: 25px; border-radius: 8px; text-align: center; color: #f5d69a; margin-top: 20px; }
   </style>
 </head>
 <body>
@@ -63,95 +70,100 @@
 <header>
   <div class="brand">MARLEY · COFFEE CHILE <span class="badge">B2B</span></div>
   <nav>
-    <a href="#" onclick="showView('home-view')">Inicio</a>
-    <a href="#modelos" onclick="showView('home-view')">Industrias</a>
-    <a href="#" onclick="showView('registro-view')">Registrar Negocio</a>
+    <a onclick="showView('home-view')">Inicio</a>
+    <a onclick="navigateToModel('HORECA')">HORECA</a>
+    <a onclick="navigateToModel('OCS')">OCS</a>
+    <a onclick="navigateToModel('ESTACIONES')">Estaciones</a>
+    <a onclick="navigateToModel('PANADERIAS')">Panaderías</a>
+    <a onclick="showView('registro-view')" style="color:var(--accent);">Registro B2B</a>
   </nav>
 </header>
 
-<!-- ==================== VISTA 1: HOME / INICIO CON MODELOS DE NEGOCIO ==================== -->
+<!-- BARRA DE ESTADO DE SESIÓN -->
+<div class="user-status-bar">
+  <div id="session-info">Estado: <span style="color:#aaa;">Navegando como Invitado</span></div>
+  <div id="session-action"><button class="btn" style="padding:4px 10px; font-size:12px;" onclick="showView('registro-view')">Registrarse para Acceder</button></div>
+</div>
+
+<!-- ==================== VISTA 1: HOME / CATÁLOGO GENERAL ==================== -->
 <div id="home-view" class="view-page active">
   <section class="hero">
-    <h1>Soluciones B2B que elevan <span>tu negocio</span></h1>
-    <p>Suministro de café de especialidad, equipamiento técnico y reorden automatizado para HORECA, Oficinas, Estaciones y Panaderías.</p>
+    <h1>Ecosistema B2B Phygital <span>Marley Coffee</span></h1>
+    <p>Suministro de café de especialidad, equipamiento técnico y reorden automatizado. Accede a tu portal exclusivo según tu rubro.</p>
     <button class="btn" onclick="showView('registro-view')">Registrar mi Negocio</button>
   </section>
 
-  <div id="modelos" class="container">
+  <div class="container">
     <div class="section-title">POR INDUSTRIA</div>
-    <h2 style="font-size: 30px; margin-top:0;">Explora las Soluciones por Modelo</h2>
+    <h2 style="font-size: 28px; margin-top:0;">Modelos de Negocio Habilitados</h2>
     
     <div class="grid-models">
-      <!-- Card HORECA -->
       <div class="card-model">
         <div>
           <span style="color:var(--accent); font-weight:bold; font-size:12px;">01 / HORECA</span>
           <h3>Hoteles, Restó & Cafés</h3>
-          <p>Catálogo cerrado con precios por convenio, reposición rápida y despacho prioritario desde micro-hubs regionales.</p>
+          <p>Catálogo cerrado con precios por convenio, reposición en 1-clic y despacho regional 3PL.</p>
         </div>
-        <button class="btn secondary" onclick="openLanding('HORECA')">Ver Solución HORECA →</button>
+        <button class="btn secondary" onclick="navigateToModel('HORECA')">Ingresar a HORECA →</button>
       </div>
 
-      <!-- Card OCS -->
       <div class="card-model">
         <div>
           <span style="color:var(--accent); font-weight:bold; font-size:12px;">02 / OCS</span>
           <h3>Office Coffee Service</h3>
-          <p>Estaciones de café corporativas con soporte técnico vía QR en la máquina y suministro programado.</p>
+          <p>Estaciones de café corporativas con soporte técnico vía QR y suministro programado.</p>
         </div>
-        <button class="btn secondary" onclick="openLanding('OCS')">Ver Solución OCS →</button>
+        <button class="btn secondary" onclick="navigateToModel('OCS')">Ingresar a OCS →</button>
       </div>
 
-      <!-- Card Estaciones -->
       <div class="card-model">
         <div>
           <span style="color:var(--accent); font-weight:bold; font-size:12px;">03 / CONVENIENCIA</span>
           <h3>Estaciones de Servicio</h3>
-          <p>Operación de alto flujo, reposición directa y sincronización de consumo POS.</p>
+          <p>Operación de alto flujo, reposición directa y sincronización de datos POS.</p>
         </div>
-        <button class="btn secondary" onclick="openLanding('ESTACIONES')">Ver Solución Estaciones →</button>
+        <button class="btn secondary" onclick="navigateToModel('ESTACIONES')">Ingresar a Estaciones →</button>
       </div>
 
-      <!-- Card Panaderías -->
       <div class="card-model">
         <div>
           <span style="color:var(--accent); font-weight:bold; font-size:12px;">04 / BAKERY</span>
           <h3>Panaderías & Pastelerías</h3>
-          <p>Cápsulas de capacitación rápida 'Barista Bakery Express' y checklist de calidad por turno.</p>
+          <p>Cápsulas de capacitación 'Barista Bakery Express' y checklist diario de calidad por turno.</p>
         </div>
-        <button class="btn secondary" onclick="openLanding('PANADERIAS')">Ver Solución Panaderías →</button>
+        <button class="btn secondary" onclick="navigateToModel('PANADERIAS')">Ingresar a Panaderías →</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ==================== VISTA 2: FORMULARIO DE REGISTRO B2B ==================== -->
+<!-- ==================== VISTA 2: LANDING PAGE DE REGISTRO DEDICADA ==================== -->
 <div id="registro-view" class="view-page">
   <div class="container">
-    <div class="form-container">
-      <div class="section-title">REGISTRO DE CLIENTE</div>
-      <h2 style="margin-top:0;">Habilita tu Cuenta B2B</h2>
-      <p style="color:var(--muted); font-size:14px;">Al registrarte, quedarás vinculado a la base de datos oficial para reordenar por WhatsApp sin requerir credenciales.</p>
+    <div class="form-card">
+      <div class="section-title">REGISTRO OBLIGATORIO DE CLIENTE</div>
+      <h2 style="margin-top:0; color:#fff;">Habilita tu Acceso B2B</h2>
+      <p style="color:var(--muted); font-size:14px; margin-bottom:20px;">Completa tu ficha comercial para desbloquear la Landing Page de tu modelo de negocio y vincular tu número a la reorden por WhatsApp.</p>
 
       <form id="formRegistroB2B">
         <div class="form-group">
-          <label>Nombre del Dueño / Encargado</label>
+          <label>Nombre del Dueño / Encargado *</label>
           <input type="text" id="reg_nombre" required placeholder="Ej: Carlos Mendoza">
         </div>
         <div class="form-group">
-          <label>Nombre de la Empresa / Local</label>
+          <label>Nombre de la Empresa / Local *</label>
           <input type="text" id="reg_empresa" required placeholder="Ej: Hotel Piloto SpA">
         </div>
         <div class="form-group">
-          <label>Teléfono Celular (WhatsApp para pedidos)</label>
+          <label>Teléfono Celular (WhatsApp de Pedidos) *</label>
           <input type="tel" id="reg_telefono" required placeholder="Ej: +56912345678">
         </div>
         <div class="form-group">
-          <label>Dirección del Local</label>
+          <label>Dirección del Local / Oficina *</label>
           <input type="text" id="reg_direccion" required placeholder="Ej: Av. Providencia 1234, Santiago">
         </div>
         <div class="form-group">
-          <label>Modelo de Negocio</label>
+          <label>Modelo de Negocio / Rubro *</label>
           <select id="reg_modelo" required>
             <option value="">Selecciona tu rubro...</option>
             <option value="HORECA">HORECA (Hoteles, Restaurantes, Cafés)</option>
@@ -161,5 +173,205 @@
           </select>
         </div>
         <div class="form-group">
-          <label>ID Máquina / Placa QR (Opcional)</label>
-          <input type="text" id="reg_ma
+          <label>ID de Máquina (Placa QR - Opcional)</label>
+          <input type="text" id="reg_maquina" placeholder="Ej: MKA-2026-001">
+        </div>
+        <button type="submit" class="btn" style="width:100%; margin-top:10px;">Completar Registro e Ingresar</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== VISTA 3: LANDINGS INDEPENDIENTES PROTEGIDAS ==================== -->
+
+<!-- LANDING HORECA -->
+<div id="landing-HORECA" class="view-page">
+  <div class="container">
+    <div class="landing-box header">
+      <div class="section-title">PORTAL EXCLUSIVO HORECA</div>
+      <h1 style="margin:5px 0 10px;">Hoteles, Restaurantes y Cafeterías</h1>
+      <p style="color:var(--muted);">Garantía de abastecimiento para salón de alto consumo. Precios preferenciales y despacho acelerado desde Micro-Hubs regionales.</p>
+    </div>
+
+    <div class="landing-box">
+      <h3>Propuesta de Valor e Insumos HORECA</h3>
+      <ul class="feature-list">
+        <li><strong>Catálogo por Convenio:</strong> Acceso a sacos de café en grano Marley Coffee 1kg (Tueste Medio/Oscuro) con tarifa corporativa.</li>
+        <li><strong>Reorden en 1-Clic:</strong> Solicitud directa a bodega sin ingresar datos de facturación repetitivos.</li>
+        <li><strong>Cobertura Logística:</strong> Envíos coordinados con Micro-Hubs en Valparaíso y Biobío.</li>
+      </ul>
+      <div style="margin-top:25px; text-align:center;">
+        <button class="btn" onclick="ejecutarReordenWhatsApp('Reorden Grano HORECA')">📱 Solicitar Reorden HORECA vía WhatsApp</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LANDING OCS -->
+<div id="landing-OCS" class="view-page">
+  <div class="container">
+    <div class="landing-box header">
+      <div class="section-title">PORTAL EXCLUSIVO OCS</div>
+      <h1 style="margin:5px 0 10px;">Office Coffee Service (Oficinas)</h1>
+      <p style="color:var(--muted);">Solución corporativa para estaciones de trabajo. Monitoreo técnico de equipamiento y suministro automático.</p>
+    </div>
+
+    <div class="landing-box">
+      <h3>Gestión de Equipamiento y Soporte QR</h3>
+      <ul class="feature-list">
+        <li><strong>Soporte Técnico QR (Flujo 003):</strong> Escaneo directo para reportar fallas de molino o erogación a nuestro partner XYZ SpA.</li>
+        <li><strong>Cuidado de Máquina:</strong> Filtros de agua y descalcificadores incluidos en el convenio.</li>
+        <li><strong>Insumos Corporativos:</strong> Vasos compostables, agitadores y variedad de grano.</li>
+      </ul>
+      <div style="margin-top:25px; text-align:center;">
+        <button class="btn" onclick="ejecutarReordenWhatsApp('Reporte Tecnico / Insumos OCS')">🛠️ Solicitar Soporte o Insumos OCS</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LANDING ESTACIONES -->
+<div id="landing-ESTACIONES" class="view-page">
+  <div class="container">
+    <div class="landing-box header">
+      <div class="section-title">PORTAL EXCLUSIVO ESTACIONES DE SERVICIO</div>
+      <h1 style="margin:5px 0 10px;">Tiendas de Conveniencia & Ruta</h1>
+      <p style="color:var(--muted);">Suministro ininterrumpido 24/7 para puntos de venta de alta rotación.</p>
+    </div>
+
+    <div class="landing-box">
+      <h3>Operación de Alto Tránsito</h3>
+      <ul class="feature-list">
+        <li><strong>Integración POS:</strong> Carga de ventas para proyección automática de stock.</li>
+        <li><strong>Respuesta Exprés:</strong> Reposición prioritaria para evitar quiebres de stock en vitrina.</li>
+        <li><strong>Estandarización:</strong> Recetas automatizadas para mantener la misma taza en toda la red.</li>
+      </ul>
+      <div style="margin-top:25px; text-align:center;">
+        <button class="btn" onclick="ejecutarReordenWhatsApp('Reorden Stock Estaciones POS')">⛽ Pedir Reposición Estaciones 24/7</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LANDING PANADERIAS -->
+<div id="landing-PANADERIAS" class="view-page">
+  <div class="container">
+    <div class="landing-box header">
+      <div class="section-title">PORTAL EXCLUSIVO BAKERY</div>
+      <h1 style="margin:5px 0 10px;">Panaderías y Pastelerías</h1>
+      <p style="color:var(--muted);">Acompañamiento operativo y capacitación para el personal de turno.</p>
+    </div>
+
+    <div class="landing-box">
+      <h3>Módulo Barista Bakery Express</h3>
+      <ul class="feature-list">
+        <li><strong>Cápsula de Capacitación (Flujo 004):</strong> Video de &lt; 90 segundos para inductar a nuevos colaboradores.</li>
+        <li><strong>Checklist por Turno:</strong> 5 preguntas de verificación de molienda y limpieza.</li>
+        <li><strong>Maridaje:</strong> Café formulado para resaltar con repostería y panadería fina.</li>
+      </ul>
+      <div style="margin-top:25px; text-align:center;">
+        <button class="btn" onclick="ejecutarReordenWhatsApp('Solicitud Capacitacion / Reposicion Bakery')">🥐 Solicitar Capacitación / Stock Bakery</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCRIPT DE LÓGICA Y GATING ==================== -->
+<script>
+  const MAKE_WEBHOOK_URL = "https://hook.us2.make.com/TU_WEBHOOK_AQUI"; // Reemplaza con tu Webhook
+  let clienteSesion = null;
+
+  // Cargar sesión guardada al iniciar la página
+  window.addEventListener('DOMContentLoaded', () => {
+    const sessionData = localStorage.getItem('marley_b2b_user');
+    if (sessionData) {
+      clienteSesion = JSON.parse(sessionData);
+      updateSessionUI();
+    }
+  });
+
+  // Actualizar Barra Superior de Sesión
+  function updateSessionUI() {
+    const infoEl = document.getElementById('session-info');
+    const actionEl = document.getElementById('session-action');
+
+    if (clienteSesion) {
+      infoEl.innerHTML = `<span style="color:var(--accent); font-weight:bold;">Sesión Activa:</span> ${clienteSesion.empresa} (${clienteSesion.nombre}) | Modelo: <strong>${clienteSesion.modelo}</strong>`;
+      actionEl.innerHTML = `<button class="btn danger" onclick="cerrarSesion()">Cerrar Sesión</button>`;
+    } else {
+      infoEl.innerHTML = `Estado: <span style="color:#aaa;">Navegando como Invitado</span>`;
+      actionEl.innerHTML = `<button class="btn" style="padding:4px 10px; font-size:12px;" onclick="showView('registro-view')">Registrarse para Acceder</button>`;
+    }
+  }
+
+  // Navegación Básica de Vistas
+  function showView(viewId) {
+    document.querySelectorAll('.view-page').forEach(el => el.classList.remove('active'));
+    document.getElementById(viewId).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  // Lógica de GATING / Restricción de Acceso a las Landings
+  function navigateToModel(modeloKey) {
+    // 1. Validar si existe registro
+    if (!clienteSesion) {
+      alert("🔒 ACCESO RESTRINGIDO\nDebes completar el registro B2B para acceder a las Landings exclusivas por modelo.");
+      // Pre-seleccionar el modelo en el formulario para agilizar
+      document.getElementById('reg_modelo').value = modeloKey;
+      showView('registro-view');
+      return;
+    }
+
+    // 2. Si está registrado, permitir ingreso a la Landing solicitada
+    showView('landing-' + modeloKey);
+  }
+
+  // Guardar Formulario de Registro
+  document.getElementById('formRegistroB2B').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    clienteSesion = {
+      nombre: document.getElementById('reg_nombre').value,
+      empresa: document.getElementById('reg_empresa').value,
+      telefono: document.getElementById('reg_telefono').value,
+      direccion: document.getElementById('reg_direccion').value,
+      modelo: document.getElementById('reg_modelo').value,
+      maquina: document.getElementById('reg_maquina').value || 'MKA-GENERAL',
+      fecha_registro: new Date().toISOString()
+    };
+
+    // Guardar en LocalStorage para no perder la sesión al recargar
+    localStorage.setItem('marley_b2b_user', JSON.stringify(clienteSesion));
+    updateSessionUI();
+
+    // Enviar a Make / Google Sheets
+    fetch(MAKE_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(clienteSesion)
+    }).catch(err => console.log('Guardado localmente'));
+
+    alert(`¡Registro exitoso! Bienvenido ${clienteSesion.nombre}. Redirigiendo a tu Portal ${clienteSesion.modelo}...`);
+
+    // Redirigir a su Landing correspondiente
+    showView('landing-' + clienteSesion.modelo);
+  });
+
+  // Cerrar Sesión
+  function cerrarSesion() {
+    localStorage.removeItem('marley_b2b_user');
+    clienteSesion = null;
+    updateSessionUI();
+    showView('home-view');
+  }
+
+  // Enviar Pedido por WhatsApp con Contexto
+  function ejecutarReordenWhatsApp(accion) {
+    if (!clienteSesion) return;
+
+    const mensaje = `Hola Marley Coffee B2B.\nSolicitud: ${accion}\nEmpresa: ${clienteSesion.empresa}\nContacto: ${clienteSesion.nombre}\nTeléfono: ${clienteSesion.telefono}\nDirección: ${clienteSesion.direccion}\nModelo: ${clienteSesion.modelo}\nMáquina ID: ${clienteSesion.maquina}`;
+    window.open(`https://wa.me/56912345678?text=${encodeURIComponent(mensaje)}`, '_blank');
+  }
+</script>
+</body>
+</html>

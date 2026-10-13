@@ -342,7 +342,7 @@
     showView('landing-' + modeloKey);
   }
 
-  // INICIO DE SESIÓN BUSCANDO EN GOOGLE SHEETS
+// INICIO DE SESIÓN BUSCANDO EN GOOGLE SHEETS (SÚPER FLEXIBLE)
   document.getElementById('formLoginB2B').addEventListener('submit', async function(e) {
     e.preventDefault();
     const userInput = document.getElementById('login_usuario').value.trim().replace(/[^0-9kK]/g, '');
@@ -351,21 +351,32 @@
       const response = await fetch(APPS_SCRIPT_URL);
       const usuarios = await response.json();
 
-      const usuarioValido = usuarios.find(u => 
-        String(u.Telefono_ID).replace(/[^0-9]/g, '') === userInput || 
-        String(u.Rut_Dueño).replace(/[^0-9kK]/g, '') === userInput ||
-        String(u.Nombre_Duenio).toLowerCase() === userInput.toLowerCase()
-      );
+      // Buscamos coincidencia en cualquier propiedad del objeto (Teléfono, RUT, ID, etc.)
+      const usuarioValido = usuarios.find(u => {
+        return Object.values(u).some(valor => {
+          if (!valor) return false;
+          const valorLimpio = String(valor).replace(/[^0-9kK]/g, '');
+          return valorLimpio.length > 3 && valorLimpio === userInput;
+        });
+      });
 
       if (usuarioValido) {
+        // Extraemos valores sin importar exactamente cómo se llame la columna en Excel
+        const nombre = usuarioValido.Nombre_Duenio || usuarioValido.Nombre || usuarioValido.Cliente || usuarioValido.Contacto || "Cliente B2B";
+        const rut = usuarioValido.Rut_Dueño || usuarioValido.RUT || usuarioValido.Rut || "N/A";
+        const empresa = usuarioValido.Empresa || usuarioValido.Local || nombre;
+        const telefono = usuarioValido.Telefono_ID || usuarioValido.Telefono || usuarioValido.Celular || userInput;
+        const modelo = usuarioValido.Modelo_Negocio || usuarioValido.Modelo || usuarioValido.Rubro || "HORECA";
+        const maquina = usuarioValido.ID_Maquina || usuarioValido.Maquina || "MKA-GENERAL";
+
         clienteSesion = {
-          nombre: usuarioValido.Nombre_Duenio || "Cliente B2B",
-          rut: usuarioValido.Rut_Dueño || "N/A",
-          empresa: usuarioValido.Empresa || usuarioValido.Nombre_Duenio,
-          telefono: usuarioValido.Telefono_ID || "",
+          nombre: nombre,
+          rut: rut,
+          empresa: empresa,
+          telefono: telefono,
           direccion: usuarioValido.Direccion || "",
-          modelo: usuarioValido.Modelo_Negocio || "HORECA",
-          maquina: usuarioValido.ID_Maquina || "MKA-GENERAL"
+          modelo: String(modelo).toUpperCase(),
+          maquina: maquina
         };
 
         localStorage.setItem('marley_b2b_user', JSON.stringify(clienteSesion));
@@ -374,14 +385,13 @@
         alert(`¡Bienvenido de vuelta, ${clienteSesion.nombre}!`);
         navigateToModel(clienteSesion.modelo);
       } else {
-        alert("❌ No se encontraron registros. Ingresa tu número registrado (ej: 56984315107).");
+        alert("❌ No se encontraron registros. Ingresa tu número o RUT registrado.");
       }
     } catch (err) {
       console.error(err);
       alert("Hubo un error de conexión con la base de datos.");
     }
   });
-
   // REGISTRO DE NUEVO CLIENTE CON REDIRECCIÓN AUTO A WHATSAPP
   document.getElementById('formRegistroB2B').addEventListener('submit', function(e) {
     e.preventDefault();

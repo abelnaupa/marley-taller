@@ -38,12 +38,17 @@
 
     .container { max-width: 1100px; margin: 0 auto; padding: 35px 20px; }
 
-    /* Grilla de Modelos */
+    /* Grilla de Modelos y Productos */
     .section-title { color: var(--accent); letter-spacing: 2px; font-size: 13px; font-weight: 700; margin-bottom: 5px; }
     .grid-models { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-top: 20px; }
     .card-model { background: var(--card); border: 1px solid var(--border); border-top: 4px solid var(--accent); border-radius: 8px; padding: 22px; display: flex; flex-direction: column; justify-content: space-between; }
     .card-model h3 { margin: 8px 0 6px; color: #fff; font-size: 19px; }
     .card-model p { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
+
+    .grid-productos { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
+    .card-producto { background: #1a1d24; border: 1px solid var(--border); border-radius: 8px; padding: 20px; text-align: center; }
+    .card-producto h4 { margin: 10px 0 5px; color: var(--accent); font-size: 17px; }
+    .card-producto .precio { font-size: 18px; font-weight: bold; margin: 10px 0; color: #fff; }
 
     /* Vistas Dinámicas */
     .view-page { display: none; }
@@ -61,6 +66,12 @@
     .feature-list { list-style: none; padding: 0; }
     .feature-list li { padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 15px; }
     .feature-list li strong { color: var(--accent); }
+
+    /* Modal Login */
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; }
+    .modal-overlay.active { display: flex; }
+    .modal-content { background: var(--card); border: 1px solid var(--accent); border-radius: 10px; padding: 30px; width: 100%; max-width: 400px; position: relative; }
+    .close-modal { position: absolute; top: 10px; right: 15px; color: #fff; font-size: 20px; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -80,7 +91,30 @@
 <!-- BARRA DE ESTADO DE SESIÓN -->
 <div class="user-status-bar">
   <div id="session-info">Estado: <span style="color:#aaa;">Navegando como Invitado</span></div>
-  <div id="session-action"><button class="btn" style="padding:4px 10px; font-size:12px;" onclick="showView('registro-view')">Registrarse para Acceder</button></div>
+  <div id="session-action">
+    <button class="btn secondary" style="padding:4px 10px; font-size:12px; margin-right:8px;" onclick="toggleLoginModal(true)">Iniciar Sesión</button>
+    <button class="btn" style="padding:4px 10px; font-size:12px;" onclick="showView('registro-view')">Registrarse</button>
+  </div>
+</div>
+
+<!-- MODAL INICIAR SESIÓN -->
+<div id="modal-login" class="modal-overlay">
+  <div class="modal-content">
+    <span class="close-modal" onclick="toggleLoginModal(false)">&times;</span>
+    <div class="section-title">ACCESO CLIENTES B2B</div>
+    <h3 style="margin-top:5px;">Iniciar Sesión</h3>
+    <form id="formLoginB2B">
+      <div class="form-group">
+        <label>RUT Empresa o Correo *</label>
+        <input type="text" id="login_usuario" required placeholder="Ej: 76.123.456-K">
+      </div>
+      <div class="form-group">
+        <label>Teléfono o Contraseña *</label>
+        <input type="password" id="login_pass" required placeholder="******">
+      </div>
+      <button type="submit" class="btn" style="width:100%; margin-top:10px;">Ingresar al Portal</button>
+    </form>
+  </div>
 </div>
 
 <!-- ==================== VISTA 1: HOME / CATÁLOGO GENERAL ==================== -->
@@ -196,12 +230,8 @@
     </div>
 
     <div class="landing-box">
-      <h3>Propuesta de Valor e Insumos HORECA</h3>
-      <ul class="feature-list">
-        <li><strong>Catálogo por Convenio:</strong> Acceso a sacos de café en grano Marley Coffee 1kg (Tueste Medio/Oscuro) con tarifa corporativa.</li>
-        <li><strong>Reorden en 1-Clic:</strong> Solicitud directa a bodega sin ingresar datos de facturación repetitivos.</li>
-        <li><strong>Cobertura Logística:</strong> Envíos coordinados con Micro-Hubs en Valparaíso y Biobío.</li>
-      </ul>
+      <h3>Catálogo de Productos Asignados</h3>
+      <div id="productos-HORECA" class="grid-productos"></div>
       <div style="margin-top:25px; text-align:center;">
         <button class="btn" onclick="ejecutarReordenWhatsApp('Reorden Grano HORECA')">📱 Solicitar Reorden HORECA vía WhatsApp</button>
       </div>
@@ -219,12 +249,8 @@
     </div>
 
     <div class="landing-box">
-      <h3>Gestión de Equipamiento y Soporte QR</h3>
-      <ul class="feature-list">
-        <li><strong>Soporte Técnico QR (Flujo 003):</strong> Escaneo directo para reportar fallas de molino o erogación a nuestro partner XYZ SpA.</li>
-        <li><strong>Cuidado de Máquina:</strong> Filtros de agua y descalcificadores incluidos en el convenio.</li>
-        <li><strong>Insumos Corporativos:</strong> Vasos compostables, agitadores y variedad de grano.</li>
-      </ul>
+      <h3>Insumos y Repuestos Asignados</h3>
+      <div id="productos-OCS" class="grid-productos"></div>
       <div style="margin-top:25px; text-align:center;">
         <button class="btn" onclick="ejecutarReordenWhatsApp('Reporte Tecnico / Insumos OCS')">🛠️ Solicitar Soporte o Insumos OCS</button>
       </div>
@@ -242,12 +268,8 @@
     </div>
 
     <div class="landing-box">
-      <h3>Operación de Alto Tránsito</h3>
-      <ul class="feature-list">
-        <li><strong>Integración POS:</strong> Carga de ventas para proyección automática de stock.</li>
-        <li><strong>Respuesta Exprés:</strong> Reposición prioritaria para evitar quiebres de stock en vitrina.</li>
-        <li><strong>Estandarización:</strong> Recetas automatizadas para mantener la misma taza en toda la red.</li>
-      </ul>
+      <h3>Suministros de Conveniencia</h3>
+      <div id="productos-ESTACIONES" class="grid-productos"></div>
       <div style="margin-top:25px; text-align:center;">
         <button class="btn" onclick="ejecutarReordenWhatsApp('Reorden Stock Estaciones POS')">⛽ Pedir Reposición Estaciones 24/7</button>
       </div>
@@ -265,12 +287,8 @@
     </div>
 
     <div class="landing-box">
-      <h3>Módulo Barista Bakery Express</h3>
-      <ul class="feature-list">
-        <li><strong>Cápsula de Capacitación (Flujo 004):</strong> Video de &lt; 90 segundos para inductar a nuevos colaboradores.</li>
-        <li><strong>Checklist por Turno:</strong> 5 preguntas de verificación de molienda y limpieza.</li>
-        <li><strong>Maridaje:</strong> Café formulado para resaltar con repostería y panadería fina.</li>
-      </ul>
+      <h3>Insumos y Módulos Bakery</h3>
+      <div id="productos-PANADERIAS" class="grid-productos"></div>
       <div style="margin-top:25px; text-align:center;">
         <button class="btn" onclick="ejecutarReordenWhatsApp('Solicitud Capacitacion / Reposicion Bakery')">🥐 Solicitar Capacitación / Stock Bakery</button>
       </div>
@@ -278,53 +296,126 @@
   </div>
 </div>
 
-<!-- ==================== SCRIPT DE LÓGICA Y GATING (COMPLETO) ==================== -->
+<!-- ==================== SCRIPT DE LÓGICA Y INTEGRACIÓN ==================== -->
 <script>
   const MAKE_WEBHOOK_URL = "https://hook.us2.make.com/pbefg0illwjlgy5hte5dfwbt5uwvfbso";
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyyj7YOm6lHD2pClkGe32Bw2FME5JUT_6JkZyx0u82AELyOzTAFwdOkYBfl69-VTfc4/exec";
+  
   let clienteSesion = null;
 
-  // Cargar sesión guardada al iniciar la página
+  // Catálogo estático clasificado por modelo de negocio
+  const catalogosPorModelo = {
+    "HORECA": [
+      { nombre: "Café Marley Espresso 1kg (Grano)", precio: "$18.990" },
+      { nombre: "Saco Café Tueste Oscuro 5kg", precio: "$85.000" },
+      { nombre: "Jarabe Vainilla Marley 750ml", precio: "$9.990" }
+    ],
+    "OCS": [
+      { nombre: "Café Marley Office Light 1kg", precio: "$18.990" },
+      { nombre: "Pack Vasos Compostables 12oz (500u)", precio: "$24.990" },
+      { nombre: "Kit de Limpieza Descalcificador Máquina", precio: "$14.500" }
+    ],
+    "ESTACIONES": [
+      { nombre: "Café Marley Express Intenso 1kg", precio: "$18.990" },
+      { nombre: "Tapas para Vasos 12oz/16oz (500u)", precio: "$16.990" },
+      { nombre: "Agitadores de Madera (1000u)", precio: "$7.990" }
+    ],
+    "PANADERIAS": [
+      { nombre: "Café Marley Especial Bakery 1kg", precio: "$18.990" },
+      { nombre: "Cápsula Capacitación 'Barista Express'", precio: "Incluido" },
+      { nombre: "Pack Azúcar / Endulzante Marley", precio: "$6.500" }
+    ]
+  };
+
+  // Cargar sesión guardada al iniciar
   window.addEventListener('DOMContentLoaded', () => {
     const sessionData = localStorage.getItem('marley_b2b_user');
     if (sessionData) {
       clienteSesion = JSON.parse(sessionData);
       updateSessionUI();
+      renderizarProductos(clienteSesion.modelo);
     }
   });
 
-  // Actualizar Barra Superior de Sesión
+  function toggleLoginModal(show) {
+    document.getElementById('modal-login').classList.toggle('active', show);
+  }
+
+  // Actualizar Barra Superior
   function updateSessionUI() {
     const infoEl = document.getElementById('session-info');
     const actionEl = document.getElementById('session-action');
 
     if (clienteSesion) {
-      infoEl.innerHTML = `<span style="color:var(--accent); font-weight:bold;">Sesión Activa:</span> ${clienteSesion.empresa} (${clienteSesion.nombre}) | RUT: <strong>${clienteSesion.rut || 'N/A'}</strong> | Modelo: <strong>${clienteSesion.modelo}</strong>`;
+      infoEl.innerHTML = `<span style="color:var(--accent); font-weight:bold;">Sesión Activa:</span> ${clienteSesion.empresa || clienteSesion.nombre} | RUT: <strong>${clienteSesion.rut || 'N/A'}</strong> | Modelo: <strong>${clienteSesion.modelo}</strong>`;
       actionEl.innerHTML = `<button class="btn danger" onclick="cerrarSesion()">Cerrar Sesión</button>`;
     } else {
       infoEl.innerHTML = `Estado: <span style="color:#aaa;">Navegando como Invitado</span>`;
-      actionEl.innerHTML = `<button class="btn" style="padding:4px 10px; font-size:12px;" onclick="showView('registro-view')">Registrarse para Acceder</button>`;
+      actionEl.innerHTML = `
+        <button class="btn secondary" style="padding:4px 10px; font-size:12px; margin-right:8px;" onclick="toggleLoginModal(true)">Iniciar Sesión</button>
+        <button class="btn" style="padding:4px 10px; font-size:12px;" onclick="showView('registro-view')">Registrarse</button>
+      `;
     }
   }
 
-  // Navegación Básica de Vistas
   function showView(viewId) {
     document.querySelectorAll('.view-page').forEach(el => el.classList.remove('active'));
     document.getElementById(viewId).classList.add('active');
     window.scrollTo(0, 0);
   }
 
-  // Lógica de GATING / Restricción de Acceso a las Landings
   function navigateToModel(modeloKey) {
     if (!clienteSesion) {
-      alert("🔒 ACCESO RESTRINGIDO\nDebes completar el registro B2B para acceder a las Landings exclusivas por modelo.");
+      alert("🔒 ACCESO RESTRINGIDO\nDebes registrarte o iniciar sesión para acceder a las Landings exclusivas por modelo.");
       document.getElementById('reg_modelo').value = modeloKey;
       showView('registro-view');
       return;
     }
+    renderizarProductos(modeloKey);
     showView('landing-' + modeloKey);
   }
 
-  // Guardar Formulario de Registro
+  // INICIO DE SESIÓN CONTRA GOOGLE SHEETS
+  document.getElementById('formLoginB2B').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const userInput = document.getElementById('login_usuario').value.trim();
+    const passInput = document.getElementById('login_pass').value.trim();
+
+    try {
+      const response = await fetch(APPS_SCRIPT_URL);
+      const usuarios = await response.json();
+
+      // Buscar por RUT, Correo o Teléfono
+      const usuarioValido = usuarios.find(u => 
+        (u.RUT === userInput || u.Correo === userInput || u.Telefono === userInput || u.Nombre === userInput)
+      );
+
+      if (usuarioValido) {
+        clienteSesion = {
+          nombre: usuarioValido.Nombre || usuarioValido.Encargado || "Cliente B2B",
+          rut: usuarioValido.RUT || userInput,
+          empresa: usuarioValido.Empresa || usuarioValido.Nombre,
+          telefono: usuarioValido.Telefono || "",
+          direccion: usuarioValido.Direccion || "",
+          modelo: usuarioValido.Modelo || usuarioValido.Rubro || "HORECA",
+          maquina: usuarioValido.Maquina || "MKA-GENERAL"
+        };
+
+        localStorage.setItem('marley_b2b_user', JSON.stringify(clienteSesion));
+        updateSessionUI();
+        toggleLoginModal(false);
+        alert(`¡Bienvenido de vuelta, ${clienteSesion.nombre}!`);
+        navigateToModel(clienteSesion.modelo);
+      } else {
+        alert("❌ No se encontraron registros con los datos ingresados. Revisa el RUT/Correo o completa el registro.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Hubo un error de conexión con la base de datos.");
+    }
+  });
+
+  // REGISTRO DE NUEVO CLIENTE (Make + Google Sheets)
   document.getElementById('formRegistroB2B').addEventListener('submit', function(e) {
     e.preventDefault();
 
@@ -342,19 +433,35 @@
     localStorage.setItem('marley_b2b_user', JSON.stringify(clienteSesion));
     updateSessionUI();
 
-    // Enviar a Make / Google Sheets
+    // Disparar Webhook a Make (se envía a Telegram y Google Sheets)
     fetch(MAKE_WEBHOOK_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(clienteSesion)
-    }).catch(err => console.log('Guardado localmente'));
+    }).catch(err => console.log('Procesado localmente'));
 
     alert(`¡Registro exitoso! Bienvenido ${clienteSesion.nombre}. Redirigiendo a tu Portal ${clienteSesion.modelo}...`);
-
-    showView('landing-' + clienteSesion.modelo);
+    navigateToModel(clienteSesion.modelo);
   });
 
-  // Cerrar Sesión
+  function renderizarProductos(modelo) {
+    const contenedor = document.getElementById('productos-' + modelo);
+    if (!contenedor) return;
+
+    const productos = catalogosPorModelo[modelo] || catalogosPorModelo["HORECA"];
+    contenedor.innerHTML = "";
+
+    productos.forEach(p => {
+      contenedor.innerHTML += `
+        <div class="card-producto">
+          <h4>${p.nombre}</h4>
+          <p class="precio">${p.precio}</p>
+          <button class="btn secondary" style="font-size:12px;" onclick="ejecutarReordenWhatsApp('Pedido: ${p.nombre}')">Solicitar Pedido</button>
+        </div>
+      `;
+    });
+  }
+
   function cerrarSesion() {
     localStorage.removeItem('marley_b2b_user');
     clienteSesion = null;
@@ -362,7 +469,6 @@
     showView('home-view');
   }
 
-  // Enviar Pedido por WhatsApp con Contexto
   function ejecutarReordenWhatsApp(accion) {
     if (!clienteSesion) return;
 

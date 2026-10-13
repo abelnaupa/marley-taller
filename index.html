@@ -269,6 +269,7 @@
 <script>
   const MAKE_WEBHOOK_URL = "https://hook.us2.make.com/pbefg0illwjlgy5hte5dfwbt5uwvfbso";
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyyj7YOm6lHD2pClkGe32Bw2FME5JUT_6JkZyx0u82AELyOzTAFwdOkYBfl69-VTfc4/exec";
+  const NUMERO_WHATSAPP_EMPRESA = "56912345678"; // Reemplaza por tu número real de Marley Coffee B2B
   
   let clienteSesion = null;
 
@@ -381,7 +382,7 @@
     }
   });
 
-  // REGISTRO DE NUEVO CLIENTE
+  // REGISTRO DE NUEVO CLIENTE CON REDIRECCIÓN AUTO A WHATSAPP
   document.getElementById('formRegistroB2B').addEventListener('submit', function(e) {
     e.preventDefault();
 
@@ -401,13 +402,21 @@
     localStorage.setItem('marley_b2b_user', JSON.stringify(clienteSesion));
     updateSessionUI();
 
+    // Guardado en Make / Google Sheets
     fetch(MAKE_WEBHOOK_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(clienteSesion)
     }).catch(err => console.log('Procesado localmente'));
 
-    alert(`¡Registro exitoso! Bienvenido ${clienteSesion.nombre}. Redirigiendo a tu Portal ${clienteSesion.modelo}...`);
+    // Mensaje automático para el WhatsApp del cliente
+    const mensajeWhatsApp = `¡Hola Marley Coffee B2B! ☕\nAcabo de completar mi registro en el portal:\n\n• Empresa: ${clienteSesion.empresa}\n• Encargado: ${clienteSesion.nombre}\n• RUT: ${clienteSesion.rut}\n• Teléfono: ${clienteSesion.telefono}\n• Modelo: ${clienteSesion.modelo}\n\nQuedo a la espera de la confirmación de mi cuenta.🏼`;
+
+    alert(`¡Registro exitoso! Bienvenido ${clienteSesion.nombre}. Serás redirigido a WhatsApp para confirmar tu activación.`);
+
+    // Redirigir a WhatsApp
+    window.open(`https://wa.me/${NUMERO_WHATSAPP_EMPRESA}?text=${encodeURIComponent(mensajeWhatsApp)}`, '_blank');
+
     navigateToModel(clienteSesion.modelo);
   });
 
@@ -440,7 +449,7 @@
     if (!clienteSesion) return;
 
     const mensaje = `Hola Marley Coffee B2B.\nSolicitud: ${accion}\nEmpresa: ${clienteSesion.empresa}\nRUT: ${clienteSesion.rut}\nContacto: ${clienteSesion.nombre}\nTeléfono: ${clienteSesion.telefono}\nDirección: ${clienteSesion.direccion}\nModelo: ${clienteSesion.modelo}\nMáquina ID: ${clienteSesion.maquina}`;
-    window.open(`https://wa.me/56912345678?text=${encodeURIComponent(mensaje)}`, '_blank');
+    window.open(`https://wa.me/${NUMERO_WHATSAPP_EMPRESA}?text=${encodeURIComponent(mensaje)}`, '_blank');
   }
 </script>
 </body>

@@ -13,6 +13,7 @@
       --muted: #dedbd3;
       --border: #2a2d35;
       --danger: #ff4d4d;
+      --success: #28a745;
     }
     body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
     
@@ -63,6 +64,17 @@
     /* Contenido Landings */
     .landing-box { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 30px; margin-bottom: 25px; }
     .landing-box.header { border-top: 5px solid var(--accent); }
+
+    /* Calculadora & Historial */
+    .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 768px) { .calc-grid { grid-template-columns: 1fr; } }
+    .calc-result-box { background: #1a1d24; border: 1px solid var(--accent); border-radius: 8px; padding: 20px; }
+    .calc-stat { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+    .calc-stat.highlight { font-size: 18px; font-weight: bold; color: var(--accent); border-bottom: none; }
+
+    table.history-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; }
+    table.history-table th, table.history-table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); }
+    table.history-table th { background: #1a1d24; color: var(--accent); }
 
     /* Modal Login */
     .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; }
@@ -211,7 +223,7 @@
   </div>
 </div>
 
-<!-- ==================== VISTA 3: LANDINGS INDEPENDIENTES ==================== -->
+<!-- ==================== VISTA 3: LANDINGS INDEPENDIENTES Y SECCIONES B2B ==================== -->
 
 <div id="landing-HORECA" class="view-page">
   <div class="container">
@@ -222,6 +234,42 @@
     <div class="landing-box">
       <h3>Catálogo de Productos Asignados</h3>
       <div id="productos-HORECA" class="grid-productos"></div>
+    </div>
+    <!-- CALCULADORA DE COSTOS -->
+    <div class="landing-box">
+      <div class="section-title">HERRAMIENTA DE SIMULACIÓN</div>
+      <h3>🧮 Calculadora de Costos y Margen de Café</h3>
+      <div class="calc-grid">
+        <div>
+          <div class="form-group">
+            <label>Tazas vendidas por día:</label>
+            <input type="number" id="calc_tazas" value="50" oninput="calcularRentabilidad()">
+          </div>
+          <div class="form-group">
+            <label>Precio de venta por taza ($ CLP):</label>
+            <input type="number" id="calc_precio_taza" value="2200" oninput="calcularRentabilidad()">
+          </div>
+          <div class="form-group">
+            <label>Gramos por espresso (Estar : 9g):</label>
+            <input type="number" id="calc_gramos" value="9" oninput="calcularRentabilidad()">
+          </div>
+        </div>
+        <div class="calc-result-box">
+          <div class="calc-stat"><span>Consumo estimado al mes:</span> <strong id="res_kilos">13.5 Kg</strong></div>
+          <div class="calc-stat"><span>Costo Insumo Café (Mes):</span> <strong id="res_costo_mes">$256.365</strong></div>
+          <div class="calc-stat"><span>Venta Total Proyectada:</span> <strong id="res_venta_mes">$3.300.000</strong></div>
+          <div class="calc-stat highlight"><span>Margen Bruto Estimado:</span> <span id="res_margen">$3.043.635</span></div>
+          <button class="btn" style="width:100%; margin-top:15px; font-size:13px;" onclick="solicitarInsumoCalculado()">Solicitar Stock Recomendado por Telegram</button>
+        </div>
+      </div>
+    </div>
+    <!-- HISTORIAL DE PEDIDOS -->
+    <div class="landing-box">
+      <div class="section-title">MI CUENTA B2B</div>
+      <h3>📦 Historial de Pedidos Realizados</h3>
+      <div id="historial-HORECA">
+        <p style="color:#aaa;">Cargando historial...</p>
+      </div>
     </div>
   </div>
 </div>
@@ -236,6 +284,12 @@
       <h3>Insumos y Repuestos Asignados</h3>
       <div id="productos-OCS" class="grid-productos"></div>
     </div>
+    <!-- HISTORIAL DE PEDIDOS -->
+    <div class="landing-box">
+      <div class="section-title">MI CUENTA B2B</div>
+      <h3>📦 Historial de Pedidos Realizados</h3>
+      <div id="historial-OCS"></div>
+    </div>
   </div>
 </div>
 
@@ -249,6 +303,12 @@
       <h3>Suministros de Conveniencia</h3>
       <div id="productos-ESTACIONES" class="grid-productos"></div>
     </div>
+    <!-- HISTORIAL DE PEDIDOS -->
+    <div class="landing-box">
+      <div class="section-title">MI CUENTA B2B</div>
+      <h3>📦 Historial de Pedidos Realizados</h3>
+      <div id="historial-ESTACIONES"></div>
+    </div>
   </div>
 </div>
 
@@ -261,6 +321,12 @@
     <div class="landing-box">
       <h3>Insumos y Módulos Bakery</h3>
       <div id="productos-PANADERIAS" class="grid-productos"></div>
+    </div>
+    <!-- HISTORIAL DE PEDIDOS -->
+    <div class="landing-box">
+      <div class="section-title">MI CUENTA B2B</div>
+      <h3>📦 Historial de Pedidos Realizados</h3>
+      <div id="historial-PANADERIAS"></div>
     </div>
   </div>
 </div>
@@ -302,6 +368,7 @@
       clienteSesion = JSON.parse(sessionData);
       updateSessionUI();
       renderizarProductos(clienteSesion.modelo);
+      cargarHistorialPedidos(clienteSesion.modelo);
     }
   });
 
@@ -339,10 +406,11 @@
       return;
     }
     renderizarProductos(modeloKey);
+    cargarHistorialPedidos(modeloKey);
     showView('landing-' + modeloKey);
   }
 
-  // INICIO DE SESIÓN BUSCANDO EN GOOGLE SHEETS (SÚPER FLEXIBLE)
+  // INICIO DE SESIÓN BUSCANDO EN GOOGLE SHEETS
   document.getElementById('formLoginB2B').addEventListener('submit', async function(e) {
     e.preventDefault();
     const userInput = document.getElementById('login_usuario').value.trim().replace(/[^0-9kK]/g, '');
@@ -391,7 +459,7 @@
     }
   });
 
-  // REGISTRO DE NUEVO CLIENTE CON REDIRECCIÓN AUTO A TELEGRAM
+  // REGISTRO DE NUEVO CLIENTE
   document.getElementById('formRegistroB2B').addEventListener('submit', function(e) {
     e.preventDefault();
 
@@ -411,7 +479,6 @@
     localStorage.setItem('marley_b2b_user', JSON.stringify(clienteSesion));
     updateSessionUI();
 
-    // Guardado en Make / Google Sheets
     fetch(MAKE_WEBHOOK_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -420,7 +487,6 @@
 
     alert(`¡Registro exitoso! Bienvenido ${clienteSesion.nombre}. Serás redirigido a Telegram para activar las notificaciones de tu bot.`);
 
-    // Redirigir a Telegram pasando el número para iniciar el bot
     window.open(`https://t.me/${BOT_TELEGRAM_USERNAME}?start=${clienteSesion.telefono}`, '_blank');
 
     navigateToModel(clienteSesion.modelo);
@@ -438,10 +504,98 @@
         <div class="card-producto">
           <h4>${p.nombre}</h4>
           <p class="precio">${p.precio}</p>
-          <button class="btn secondary" style="font-size:12px;" onclick="ejecutarReordenTelegram('${p.nombre}')">Solicitar Pedido</button>
+          <button class="btn secondary" style="font-size:12px;" onclick="ejecutarReordenTelegram('${p.nombre}', '${p.precio}')">Solicitar Pedido</button>
         </div>
       `;
     });
+  }
+
+  /* ==================== CALCULADORA DE RENTABILIDAD ==================== */
+  function calcularRentabilidad() {
+    const tazas = parseFloat(document.getElementById('calc_tazas').value) || 0;
+    const precioTaza = parseFloat(document.getElementById('calc_precio_taza').value) || 0;
+    const gramos = parseFloat(document.getElementById('calc_gramos').value) || 0;
+
+    const kiloPrecio = 18990; // Precio base por Kg de café Marley
+    const tazasAlMes = tazas * 30;
+    const kilosAlMes = (tazasAlMes * gramos) / 1000;
+    const costoMes = kilosAlMes * kiloPrecio;
+    const ventaMes = tazasAlMes * precioTaza;
+    const margenBruto = ventaMes - costoMes;
+
+    document.getElementById('res_kilos').innerText = kilosAlMes.toFixed(1) + " Kg";
+    document.getElementById('res_costo_mes').innerText = "$" + Math.round(costoMes).toLocaleString('es-CL');
+    document.getElementById('res_venta_mes').innerText = "$" + Math.round(ventaMes).toLocaleString('es-CL');
+    document.getElementById('res_margen').innerText = "$" + Math.round(margenBruto).toLocaleString('es-CL');
+  }
+
+  function solicitarInsumoCalculado() {
+    if (!clienteSesion) return;
+    const kilos = document.getElementById('res_kilos').innerText;
+    const pedidoDetalle = `Stock Sugerido por Calculadora: ${kilos} de Café Marley`;
+    ejecutarReordenTelegram(pedidoDetalle, document.getElementById('res_costo_mes').innerText);
+  }
+
+  /* ==================== GESTIÓN DE HISTORIAL DE PEDIDOS ==================== */
+  function guardarPedidoEnHistorial(producto, monto) {
+    if (!clienteSesion) return;
+
+    const key = `pedidos_${clienteSesion.telefono || clienteSesion.rut}`;
+    const historialActual = JSON.parse(localStorage.getItem(key) || "[]");
+
+    const nuevoPedido = {
+      id: "ORD-" + Math.floor(1000 + Math.random() * 9000),
+      fecha: new Date().toLocaleDateString('es-CL') + " " + new Date().toLocaleTimeString('es-CL', {hour: '2-digit', minute:'2-digit'}),
+      producto: producto,
+      monto: monto,
+      estado: "Enviado a Bot"
+    };
+
+    historialActual.unshift(nuevoPedido);
+    localStorage.setItem(key, JSON.stringify(historialActual));
+    cargarHistorialPedidos(clienteSesion.modelo);
+  }
+
+  function cargarHistorialPedidos(modelo) {
+    const contenedor = document.getElementById('historial-' + modelo);
+    if (!contenedor || !clienteSesion) return;
+
+    const key = `pedidos_${clienteSesion.telefono || clienteSesion.rut}`;
+    const pedidos = JSON.parse(localStorage.getItem(key) || "[]");
+
+    if (pedidos.length === 0) {
+      contenedor.innerHTML = `<p style="color:#aaa; font-size:14px;">Aún no has realizado pedidos desde este portal.</p>`;
+      return;
+    }
+
+    let html = `
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>N° Orden</th>
+            <th>Fecha</th>
+            <th>Detalle</th>
+            <th>Monto Est.</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    pedidos.forEach(p => {
+      html += `
+        <tr>
+          <td><strong>${p.id}</strong></td>
+          <td>${p.fecha}</td>
+          <td>${p.producto}</td>
+          <td>${p.monto}</td>
+          <td><span style="color:var(--accent); font-weight:bold;">${p.estado}</span></td>
+        </tr>
+      `;
+    });
+
+    html += `</tbody></table>`;
+    contenedor.innerHTML = html;
   }
 
   function cerrarSesion() {
@@ -451,8 +605,11 @@
     showView('home-view');
   }
 
-  function ejecutarReordenTelegram(producto) {
+  function ejecutarReordenTelegram(producto, precio = "Según Convenio") {
     if (!clienteSesion) return;
+
+    // Registrar pedido en el historial local
+    guardarPedidoEnHistorial(producto, precio);
 
     // Abre Telegram para solicitar el pedido a través del bot
     window.open(`https://t.me/${BOT_TELEGRAM_USERNAME}?start=pedido_${clienteSesion.telefono}`, '_blank');

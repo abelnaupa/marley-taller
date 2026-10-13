@@ -120,7 +120,7 @@
 <!-- ==================== VISTA 1: HOME / CATÁLOGO GENERAL ==================== -->
 <div id="home-view" class="view-page active">
   <section class="hero">
-    <h1>Ecosistema B2B Phygital <span>Marley Coffee</span></h1>
+    <h1>Ecosistema B2B <span>Marley Coffee</span></h1>
     <p>Suministro de café de especialidad, equipamiento técnico y reorden automatizado. Accede a tu portal exclusivo según tu rubro.</p>
     <button class="btn" onclick="showView('registro-view')">Registrar mi Negocio</button>
   </section>
@@ -191,8 +191,8 @@
           <input type="text" id="reg_empresa" required placeholder="Ej: Hotel Piloto SpA">
         </div>
         <div class="form-group">
-          <label>Teléfono Celular (WhatsApp de Pedidos) *</label>
-          <input type="tel" id="reg_telefono" required placeholder="Ej: +56912345678">
+       <label>Teléfono Celular (Sin signo +, ej: 56912345678) *</label>
+       <input type="tel" id="reg_telefono" required placeholder="56912345678" pattern="[0-9]{11}">
         </div>
         <div class="form-group">
           <label>Dirección del Local / Oficina *</label>

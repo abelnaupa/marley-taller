@@ -143,4 +143,305 @@
 
       <div class="card-model">
         <div>
-          <span style="color:var(--accent); font-weight:bold
+          <span style="color:var(--accent); font-weight:bold; font-size:12px;">03 / CONVENIENCIA</span>
+          <h3>Estaciones de Servicio</h3>
+          <p>Operación de alto flujo, reposición directa y sincronización de datos POS.</p>
+        </div>
+        <button class="btn secondary" onclick="navigateToModel('ESTACIONES')">Ingresar a Estaciones →</button>
+      </div>
+
+      <div class="card-model">
+        <div>
+          <span style="color:var(--accent); font-weight:bold; font-size:12px;">04 / BAKERY</span>
+          <h3>Panaderías & Pastelerías</h3>
+          <p>Cápsulas de capacitación 'Barista Bakery Express' y checklist diario de calidad por turno.</p>
+        </div>
+        <button class="btn secondary" onclick="navigateToModel('PANADERIAS')">Ingresar a Panaderías →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== VISTA 2: REGISTRO ==================== -->
+<div id="registro-view" class="view-page">
+  <div class="container">
+    <div class="form-card">
+      <div class="section-title">REGISTRO OBLIGATORIO DE CLIENTE</div>
+      <h2 style="margin-top:0; color:#fff;">Habilita tu Acceso B2B</h2>
+      <p style="color:var(--muted); font-size:14px; margin-bottom:20px;">Completa tu ficha comercial para desbloquear el portal de tu modelo de negocio.</p>
+
+      <form id="formRegistroB2B">
+        <div class="form-group">
+          <label>Nombre del Dueño / Encargado *</label>
+          <input type="text" id="reg_nombre" required placeholder="Ej: Carlos Mendoza">
+        </div>
+        <div class="form-group">
+          <label>RUT del Dueño / Empresa *</label>
+          <input type="text" id="reg_rut" required placeholder="Ej: 76.123.456-K">
+        </div>
+        <div class="form-group">
+          <label>Nombre de la Empresa / Local *</label>
+          <input type="text" id="reg_empresa" required placeholder="Ej: Hotel Piloto SpA">
+        </div>
+        <div class="form-group">
+          <label>Teléfono Celular (Sin signo +, ej: 56912345678) *</label>
+          <input type="tel" id="reg_telefono" required placeholder="56912345678" pattern="[0-9]{11}">
+        </div>
+        <div class="form-group">
+          <label>Dirección del Local / Oficina *</label>
+          <input type="text" id="reg_direccion" required placeholder="Ej: Av. Providencia 1234, Santiago">
+        </div>
+        <div class="form-group">
+          <label>Modelo de Negocio / Rubro *</label>
+          <select id="reg_modelo" required>
+            <option value="">Selecciona tu rubro...</option>
+            <option value="HORECA">HORECA (Hoteles, Restaurantes, Cafés)</option>
+            <option value="OCS">OCS (Office Coffee Service)</option>
+            <option value="ESTACIONES">Estaciones de Servicio</option>
+            <option value="PANADERIAS">Panaderías y Pastelerías</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>ID de Máquina (Placa QR - Opcional)</label>
+          <input type="text" id="reg_maquina" placeholder="Ej: MKA-2026-001">
+        </div>
+        <button type="submit" class="btn" style="width:100%; margin-top:10px;">Completar Registro e Ingresar</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== VISTA 3: LANDINGS INDEPENDIENTES ==================== -->
+
+<div id="landing-HORECA" class="view-page">
+  <div class="container">
+    <div class="landing-box header">
+      <div class="section-title">PORTAL EXCLUSIVO HORECA</div>
+      <h1 style="margin:5px 0 10px;">Hoteles, Restaurantes y Cafeterías</h1>
+    </div>
+    <div class="landing-box">
+      <h3>Catálogo de Productos Asignados</h3>
+      <div id="productos-HORECA" class="grid-productos"></div>
+    </div>
+  </div>
+</div>
+
+<div id="landing-OCS" class="view-page">
+  <div class="container">
+    <div class="landing-box header">
+      <div class="section-title">PORTAL EXCLUSIVO OCS</div>
+      <h1 style="margin:5px 0 10px;">Office Coffee Service (Oficinas)</h1>
+    </div>
+    <div class="landing-box">
+      <h3>Insumos y Repuestos Asignados</h3>
+      <div id="productos-OCS" class="grid-productos"></div>
+    </div>
+  </div>
+</div>
+
+<div id="landing-ESTACIONES" class="view-page">
+  <div class="container">
+    <div class="landing-box header">
+      <div class="section-title">PORTAL EXCLUSIVO ESTACIONES DE SERVICIO</div>
+      <h1 style="margin:5px 0 10px;">Tiendas de Conveniencia & Ruta</h1>
+    </div>
+    <div class="landing-box">
+      <h3>Suministros de Conveniencia</h3>
+      <div id="productos-ESTACIONES" class="grid-productos"></div>
+    </div>
+  </div>
+</div>
+
+<div id="landing-PANADERIAS" class="view-page">
+  <div class="container">
+    <div class="landing-box header">
+      <div class="section-title">PORTAL EXCLUSIVO BAKERY</div>
+      <h1 style="margin:5px 0 10px;">Panaderías y Pastelerías</h1>
+    </div>
+    <div class="landing-box">
+      <h3>Insumos y Módulos Bakery</h3>
+      <div id="productos-PANADERIAS" class="grid-productos"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== LÓGICA Y JAVASCRIPT ==================== -->
+<script>
+  const MAKE_WEBHOOK_URL = "https://hook.us2.make.com/pbefg0illwjlgy5hte5dfwbt5uwvfbso";
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyyj7YOm6lHD2pClkGe32Bw2FME5JUT_6JkZyx0u82AELyOzTAFwdOkYBfl69-VTfc4/exec";
+  
+  let clienteSesion = null;
+
+  const catalogosPorModelo = {
+    "HORECA": [
+      { nombre: "Café Marley Espresso 1kg (Grano)", precio: "$18.990" },
+      { nombre: "Saco Café Tueste Oscuro 5kg", precio: "$85.000" },
+      { nombre: "Jarabe Vainilla Marley 750ml", precio: "$9.990" }
+    ],
+    "OCS": [
+      { nombre: "Café Marley Office Light 1kg", precio: "$18.990" },
+      { nombre: "Pack Vasos Compostables 12oz (500u)", precio: "$24.990" },
+      { nombre: "Kit de Limpieza Descalcificador Máquina", precio: "$14.500" }
+    ],
+    "ESTACIONES": [
+      { nombre: "Café Marley Express Intenso 1kg", precio: "$18.990" },
+      { nombre: "Tapas para Vasos 12oz/16oz (500u)", precio: "$16.990" },
+      { nombre: "Agitadores de Madera (1000u)", precio: "$7.990" }
+    ],
+    "PANADERIAS": [
+      { nombre: "Café Marley Especial Bakery 1kg", precio: "$18.990" },
+      { nombre: "Cápsula Capacitación 'Barista Express'", precio: "Incluido" },
+      { nombre: "Pack Azúcar / Endulzante Marley", precio: "$6.500" }
+    ]
+  };
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const sessionData = localStorage.getItem('marley_b2b_user');
+    if (sessionData) {
+      clienteSesion = JSON.parse(sessionData);
+      updateSessionUI();
+      renderizarProductos(clienteSesion.modelo);
+    }
+  });
+
+  function toggleLoginModal(show) {
+    document.getElementById('modal-login').classList.toggle('active', show);
+  }
+
+  function updateSessionUI() {
+    const infoEl = document.getElementById('session-info');
+    const actionEl = document.getElementById('session-action');
+
+    if (clienteSesion) {
+      infoEl.innerHTML = `<span style="color:var(--accent); font-weight:bold;">Sesión Activa:</span> ${clienteSesion.empresa || clienteSesion.nombre} | RUT: <strong>${clienteSesion.rut || 'N/A'}</strong> | Modelo: <strong>${clienteSesion.modelo}</strong>`;
+      actionEl.innerHTML = `<button class="btn danger" onclick="cerrarSesion()">Cerrar Sesión</button>`;
+    } else {
+      infoEl.innerHTML = `Estado: <span style="color:#aaa;">Navegando como Invitado</span>`;
+      actionEl.innerHTML = `
+        <button class="btn secondary" style="padding:4px 10px; font-size:12px; margin-right:8px;" onclick="toggleLoginModal(true)">Iniciar Sesión</button>
+        <button class="btn" style="padding:4px 10px; font-size:12px;" onclick="showView('registro-view')">Registrarse</button>
+      `;
+    }
+  }
+
+  function showView(viewId) {
+    document.querySelectorAll('.view-page').forEach(el => el.classList.remove('active'));
+    document.getElementById(viewId).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  function navigateToModel(modeloKey) {
+    if (!clienteSesion) {
+      alert("🔒 ACCESO RESTRINGIDO\nDebes registrarte o iniciar sesión para acceder a las Landings exclusivas por modelo.");
+      document.getElementById('reg_modelo').value = modeloKey;
+      showView('registro-view');
+      return;
+    }
+    renderizarProductos(modeloKey);
+    showView('landing-' + modeloKey);
+  }
+
+  // INICIO DE SESIÓN BUSCANDO EN GOOGLE SHEETS
+  document.getElementById('formLoginB2B').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const userInput = document.getElementById('login_usuario').value.trim().replace(/[^0-9kK]/g, '');
+
+    try {
+      const response = await fetch(APPS_SCRIPT_URL);
+      const usuarios = await response.json();
+
+      const usuarioValido = usuarios.find(u => 
+        String(u.Telefono_ID).replace(/[^0-9]/g, '') === userInput || 
+        String(u.Rut_Dueño).replace(/[^0-9kK]/g, '') === userInput ||
+        String(u.Nombre_Duenio).toLowerCase() === userInput.toLowerCase()
+      );
+
+      if (usuarioValido) {
+        clienteSesion = {
+          nombre: usuarioValido.Nombre_Duenio || "Cliente B2B",
+          rut: usuarioValido.Rut_Dueño || "N/A",
+          empresa: usuarioValido.Empresa || usuarioValido.Nombre_Duenio,
+          telefono: usuarioValido.Telefono_ID || "",
+          direccion: usuarioValido.Direccion || "",
+          modelo: usuarioValido.Modelo_Negocio || "HORECA",
+          maquina: usuarioValido.ID_Maquina || "MKA-GENERAL"
+        };
+
+        localStorage.setItem('marley_b2b_user', JSON.stringify(clienteSesion));
+        updateSessionUI();
+        toggleLoginModal(false);
+        alert(`¡Bienvenido de vuelta, ${clienteSesion.nombre}!`);
+        navigateToModel(clienteSesion.modelo);
+      } else {
+        alert("❌ No se encontraron registros. Ingresa tu número registrado (ej: 56984315107).");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Hubo un error de conexión con la base de datos.");
+    }
+  });
+
+  // REGISTRO DE NUEVO CLIENTE
+  document.getElementById('formRegistroB2B').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const telefonoLimpio = document.getElementById('reg_telefono').value.replace(/[^0-9]/g, '');
+
+    clienteSesion = {
+      nombre: document.getElementById('reg_nombre').value,
+      rut: document.getElementById('reg_rut').value,
+      empresa: document.getElementById('reg_empresa').value,
+      telefono: telefonoLimpio,
+      direccion: document.getElementById('reg_direccion').value,
+      modelo: document.getElementById('reg_modelo').value,
+      maquina: document.getElementById('reg_maquina').value || 'MKA-GENERAL',
+      fecha_registro: new Date().toISOString()
+    };
+
+    localStorage.setItem('marley_b2b_user', JSON.stringify(clienteSesion));
+    updateSessionUI();
+
+    fetch(MAKE_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(clienteSesion)
+    }).catch(err => console.log('Procesado localmente'));
+
+    alert(`¡Registro exitoso! Bienvenido ${clienteSesion.nombre}. Redirigiendo a tu Portal ${clienteSesion.modelo}...`);
+    navigateToModel(clienteSesion.modelo);
+  });
+
+  function renderizarProductos(modelo) {
+    const contenedor = document.getElementById('productos-' + modelo);
+    if (!contenedor) return;
+
+    const productos = catalogosPorModelo[modelo] || catalogosPorModelo["HORECA"];
+    contenedor.innerHTML = "";
+
+    productos.forEach(p => {
+      contenedor.innerHTML += `
+        <div class="card-producto">
+          <h4>${p.nombre}</h4>
+          <p class="precio">${p.precio}</p>
+          <button class="btn secondary" style="font-size:12px;" onclick="ejecutarReordenWhatsApp('Pedido: ${p.nombre}')">Solicitar Pedido</button>
+        </div>
+      `;
+    });
+  }
+
+  function cerrarSesion() {
+    localStorage.removeItem('marley_b2b_user');
+    clienteSesion = null;
+    updateSessionUI();
+    showView('home-view');
+  }
+
+  function ejecutarReordenWhatsApp(accion) {
+    if (!clienteSesion) return;
+
+    const mensaje = `Hola Marley Coffee B2B.\nSolicitud: ${accion}\nEmpresa: ${clienteSesion.empresa}\nRUT: ${clienteSesion.rut}\nContacto: ${clienteSesion.nombre}\nTeléfono: ${clienteSesion.telefono}\nDirección: ${clienteSesion.direccion}\nModelo: ${clienteSesion.modelo}\nMáquina ID: ${clienteSesion.maquina}`;
+    window.open(`https://wa.me/56912345678?text=${encodeURIComponent(mensaje)}`, '_blank');
+  }
+</script>
+</body>
+</html>

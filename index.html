@@ -269,8 +269,8 @@
 <script>
   const MAKE_WEBHOOK_URL = "https://hook.us2.make.com/pbefg0illwjlgy5hte5dfwbt5uwvfbso";
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyyj7YOm6lHD2pClkGe32Bw2FME5JUT_6JkZyx0u82AELyOzTAFwdOkYBfl69-VTfc4/exec";
-  const NUMERO_WHATSAPP_EMPRESA = "5684315107"; // Reemplaza por tu número real de Marley Coffee B2B
-  
+  const BOT_TELEGRAM_USERNAME = "TuMarleyBot"; // Reemplaza por el nombre de tu bot en Telegram (sin el @)
+
   let clienteSesion = null;
 
   const catalogosPorModelo = {
@@ -342,7 +342,7 @@
     showView('landing-' + modeloKey);
   }
 
-// INICIO DE SESIÓN BUSCANDO EN GOOGLE SHEETS (SÚPER FLEXIBLE)
+  // INICIO DE SESIÓN BUSCANDO EN GOOGLE SHEETS (SÚPER FLEXIBLE)
   document.getElementById('formLoginB2B').addEventListener('submit', async function(e) {
     e.preventDefault();
     const userInput = document.getElementById('login_usuario').value.trim().replace(/[^0-9kK]/g, '');
@@ -351,7 +351,6 @@
       const response = await fetch(APPS_SCRIPT_URL);
       const usuarios = await response.json();
 
-      // Buscamos coincidencia en cualquier propiedad del objeto (Teléfono, RUT, ID, etc.)
       const usuarioValido = usuarios.find(u => {
         return Object.values(u).some(valor => {
           if (!valor) return false;
@@ -361,7 +360,6 @@
       });
 
       if (usuarioValido) {
-        // Extraemos valores sin importar exactamente cómo se llame la columna en Excel
         const nombre = usuarioValido.Nombre_Duenio || usuarioValido.Nombre || usuarioValido.Cliente || usuarioValido.Contacto || "Cliente B2B";
         const rut = usuarioValido.Rut_Dueño || usuarioValido.RUT || usuarioValido.Rut || "N/A";
         const empresa = usuarioValido.Empresa || usuarioValido.Local || nombre;
@@ -392,7 +390,8 @@
       alert("Hubo un error de conexión con la base de datos.");
     }
   });
-  // REGISTRO DE NUEVO CLIENTE CON REDIRECCIÓN AUTO A WHATSAPP
+
+  // REGISTRO DE NUEVO CLIENTE CON REDIRECCIÓN AUTO A TELEGRAM
   document.getElementById('formRegistroB2B').addEventListener('submit', function(e) {
     e.preventDefault();
 
@@ -419,13 +418,10 @@
       body: JSON.stringify(clienteSesion)
     }).catch(err => console.log('Procesado localmente'));
 
-    // Mensaje automático para el WhatsApp del cliente
-    const mensajeWhatsApp = `¡Hola Marley Coffee B2B! ☕\nAcabo de completar mi registro en el portal:\n\n• Empresa: ${clienteSesion.empresa}\n• Encargado: ${clienteSesion.nombre}\n• RUT: ${clienteSesion.rut}\n• Teléfono: ${clienteSesion.telefono}\n• Modelo: ${clienteSesion.modelo}\n\nQuedo a la espera de la confirmación de mi cuenta.🏼`;
+    alert(`¡Registro exitoso! Bienvenido ${clienteSesion.nombre}. Serás redirigido a Telegram para activar las notificaciones de tu bot.`);
 
-    alert(`¡Registro exitoso! Bienvenido ${clienteSesion.nombre}. Serás redirigido a WhatsApp para confirmar tu activación.`);
-
-    // Redirigir a WhatsApp
-    window.open(`https://wa.me/${NUMERO_WHATSAPP_EMPRESA}?text=${encodeURIComponent(mensajeWhatsApp)}`, '_blank');
+    // Redirigir a Telegram pasando el número para iniciar el bot
+    window.open(`https://t.me/${BOT_TELEGRAM_USERNAME}?start=${clienteSesion.telefono}`, '_blank');
 
     navigateToModel(clienteSesion.modelo);
   });
@@ -442,7 +438,7 @@
         <div class="card-producto">
           <h4>${p.nombre}</h4>
           <p class="precio">${p.precio}</p>
-          <button class="btn secondary" style="font-size:12px;" onclick="ejecutarReordenWhatsApp('Pedido: ${p.nombre}')">Solicitar Pedido</button>
+          <button class="btn secondary" style="font-size:12px;" onclick="ejecutarReordenTelegram('${p.nombre}')">Solicitar Pedido</button>
         </div>
       `;
     });
@@ -455,11 +451,11 @@
     showView('home-view');
   }
 
-  function ejecutarReordenWhatsApp(accion) {
+  function ejecutarReordenTelegram(producto) {
     if (!clienteSesion) return;
 
-    const mensaje = `Hola Marley Coffee B2B.\nSolicitud: ${accion}\nEmpresa: ${clienteSesion.empresa}\nRUT: ${clienteSesion.rut}\nContacto: ${clienteSesion.nombre}\nTeléfono: ${clienteSesion.telefono}\nDirección: ${clienteSesion.direccion}\nModelo: ${clienteSesion.modelo}\nMáquina ID: ${clienteSesion.maquina}`;
-    window.open(`https://wa.me/${NUMERO_WHATSAPP_EMPRESA}?text=${encodeURIComponent(mensaje)}`, '_blank');
+    // Abre Telegram para solicitar el pedido a través del bot
+    window.open(`https://t.me/${BOT_TELEGRAM_USERNAME}?start=pedido_${clienteSesion.telefono}`, '_blank');
   }
 </script>
 </body>

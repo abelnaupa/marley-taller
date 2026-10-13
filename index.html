@@ -114,7 +114,7 @@
     <h3 style="margin-top:5px;">Iniciar Sesión</h3>
     <form id="formLoginB2B">
       <div class="form-group">
-        <label>Teléfono Registrado *</label>
+        <label>Teléfono Registrado o RUT *</label>
         <input type="text" id="login_usuario" required placeholder="Ej: 56984315107">
       </div>
       <button type="submit" class="btn" style="width:100%; margin-top:10px;">Ingresar al Portal</button>
@@ -196,8 +196,8 @@
           <input type="text" id="reg_empresa" required placeholder="Ej: Hotel Piloto SpA">
         </div>
         <div class="form-group">
-          <label>Teléfono Celular (Sin signo +, ej: 56912345678) *</label>
-          <input type="tel" id="reg_telefono" required placeholder="56912345678" pattern="[0-9]{11}">
+          <label>Teléfono Celular *</label>
+          <input type="tel" id="reg_telefono" required placeholder="Ej: 56912345678 o 912345678">
         </div>
         <div class="form-group">
           <label>Dirección del Local / Oficina *</label>
@@ -335,7 +335,7 @@
 <script>
   const MAKE_WEBHOOK_URL = "https://hook.us2.make.com/pbefg0illwjlgy5hte5dfwbt5uwvfbso";
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyyj7YOm6lHD2pClkGe32Bw2FME5JUT_6JkZyx0u82AELyOzTAFwdOkYBfl69-VTfc4/exec";
-  const CONTACTO_WHATSAPP = "56983570880"; // Número directo de tu compañera
+  const CONTACTO_WHATSAPP = "56983570880"; 
 
   let clienteSesion = null;
 
@@ -381,7 +381,7 @@
     const actionEl = document.getElementById('session-action');
 
     if (clienteSesion) {
-      infoEl.innerHTML = `<span style="color:var(--accent); font-weight:bold;">Sesión Activa:</span> ${clienteSesion.empresa || clienteSesion.nombre} | RUT: <strong>${clienteSesion.rut \vert{}\vert{} 'N/A'}</strong> \vert{} Modelo: <strong>${clienteSesion.modelo}</strong>`;
+      infoEl.innerHTML = `<span style="color:var(--accent); font-weight:bold;">Sesión Activa:</span> ${clienteSesion.empresa || clienteSesion.nombre} | RUT: <strong>${clienteSesion.rut || 'N/A'}</strong> | Modelo: <strong>${clienteSesion.modelo}</strong>`;
       actionEl.innerHTML = `<button class="btn danger" onclick="cerrarSesion()">Cerrar Sesión</button>`;
     } else {
       infoEl.innerHTML = `Estado: <span style="color:#aaa;">Navegando como Invitado</span>`;
@@ -459,17 +459,20 @@
     }
   });
 
-  // REGISTRO DE NUEVO CLIENTE (REDIRECCIÓN A WHATSAPP)
+  // REGISTRO DE NUEVO CLIENTE (SANEAMIENTO FLEXIBLE DE TELÉFONO)
   document.getElementById('formRegistroB2B').addEventListener('submit', function(e) {
     e.preventDefault();
 
-    const telefonoLimpio = document.getElementById('reg_telefono').value.replace(/[^0-9]/g, '');
+    let telInput = document.getElementById('reg_telefono').value.replace(/[^0-9]/g, '');
+    if (telInput.length === 9) {
+      telInput = '56' + telInput;
+    }
 
     clienteSesion = {
       nombre: document.getElementById('reg_nombre').value,
       rut: document.getElementById('reg_rut').value,
       empresa: document.getElementById('reg_empresa').value,
-      telefono: telefonoLimpio,
+      telefono: telInput,
       direccion: document.getElementById('reg_direccion').value,
       modelo: document.getElementById('reg_modelo').value,
       maquina: document.getElementById('reg_maquina').value || 'MKA-GENERAL',
@@ -489,7 +492,6 @@
 
     alert(`¡Registro exitoso! Bienvenido ${clienteSesion.nombre}. Serás redirigido a WhatsApp para confirmar tu activación.`);
 
-    // Abre WhatsApp Directo
     window.open(`https://wa.me/${CONTACTO_WHATSAPP}?text=${encodeURIComponent(mensajeReg)}`, '_blank');
 
     navigateToModel(clienteSesion.modelo);
@@ -507,4 +509,116 @@
         <div class="card-producto">
           <h4>${p.nombre}</h4>
           <p class="precio">${p.precio}</p>
-          <button class="btn secondary" style="font-size:12
+          <button class="btn secondary" style="font-size:12px;" onclick="ejecutarReorden('${p.nombre}', '${p.precio}')">Solicitar Pedido</button>
+        </div>
+      `;
+    });
+  }
+
+  /* ==================== CALCULADORA DE RENTABILIDAD ==================== */
+  function calcularRentabilidad() {
+    const tazas = parseFloat(document.getElementById('calc_tazas').value) || 0;
+    const precioTaza = parseFloat(document.getElementById('calc_precio_taza').value) || 0;
+    const gramos = parseFloat(document.getElementById('calc_gramos').value) || 0;
+
+    const kiloPrecio = 18990;
+    const tazasAlMes = tazas * 30;
+    const kilosAlMes = (tazasAlMes * gramos) / 1000;
+    const costoMes = kilosAlMes * kiloPrecio;
+    const ventaMes = tazasAlMes * precioTaza;
+    const margenBruto = ventaMes - costoMes;
+
+    document.getElementById('res_kilos').innerText = kilosAlMes.toFixed(1) + " Kg";
+    document.getElementById('res_costo_mes').innerText = "$" + Math.round(costoMes).toLocaleString('es-CL');
+    document.getElementById('res_venta_mes').innerText = "$" + Math.round(ventaMes).toLocaleString('es-CL');
+    document.getElementById('res_margen').innerText = "$" + Math.round(margenBruto).toLocaleString('es-CL');
+  }
+
+  function solicitarInsumoCalculado() {
+    if (!clienteSesion) return;
+    const kilos = document.getElementById('res_kilos').innerText;
+    const pedidoDetalle = `Stock Sugerido por Calculadora: ${kilos} de Café Marley`;
+    ejecutarReorden(pedidoDetalle, document.getElementById('res_costo_mes').innerText);
+  }
+
+  /* ==================== GESTIÓN DE HISTORIAL DE PEDIDOS ==================== */
+  function guardarPedidoEnHistorial(producto, monto) {
+    if (!clienteSesion) return;
+
+    const key = `pedidos_${clienteSesion.telefono || clienteSesion.rut}`;
+    const historialActual = JSON.parse(localStorage.getItem(key) || "[]");
+
+    const nuevoPedido = {
+      id: "ORD-" + Math.floor(1000 + Math.random() * 9000),
+      fecha: new Date().toLocaleDateString('es-CL') + " " + new Date().toLocaleTimeString('es-CL', {hour: '2-digit', minute:'2-digit'}),
+      producto: producto,
+      monto: monto,
+      estado: "Solicitado"
+    };
+
+    historialActual.unshift(nuevoPedido);
+    localStorage.setItem(key, JSON.stringify(historialActual));
+    cargarHistorialPedidos(clienteSesion.modelo);
+  }
+
+  function cargarHistorialPedidos(modelo) {
+    const contenedor = document.getElementById('historial-' + modelo);
+    if (!contenedor || !clienteSesion) return;
+
+    const key = `pedidos_${clienteSesion.telefono || clienteSesion.rut}`;
+    const pedidos = JSON.parse(localStorage.getItem(key) || "[]");
+
+    if (pedidos.length === 0) {
+      contenedor.innerHTML = `<p style="color:#aaa; font-size:14px;">Aún no has realizado pedidos desde este portal.</p>`;
+      return;
+    }
+
+    let html = `
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>N° Orden</th>
+            <th>Fecha</th>
+            <th>Detalle</th>
+            <th>Monto Est.</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    pedidos.forEach(p => {
+      html += `
+        <tr>
+          <td><strong>${p.id}</strong></td>
+          <td>${p.fecha}</td>
+          <td>${p.producto}</td>
+          <td>${p.monto}</td>
+          <td><span style="color:var(--accent); font-weight:bold;">${p.estado}</span></td>
+        </tr>
+      `;
+    });
+
+    html += `</tbody></table>`;
+    contenedor.innerHTML = html;
+  }
+
+  function cerrarSesion() {
+    localStorage.removeItem('marley_b2b_user');
+    clienteSesion = null;
+    updateSessionUI();
+    showView('home-view');
+  }
+
+  function ejecutarReorden(producto, precio = "Según Convenio") {
+    if (!clienteSesion) return;
+
+    guardarPedidoEnHistorial(producto, precio);
+
+    const mensajePedido = `Hola Marley Coffee B2B ☕\nSolicito el siguiente pedido:\n\n• Producto: ${producto}\n• Monto Estimado: ${precio}\n\nDatos de Envío:\n• Empresa: ${clienteSesion.empresa}\n• RUT: ${clienteSesion.rut}\n• Contacto: ${clienteSesion.nombre}\n• Teléfono: ${clienteSesion.telefono}\n• Dirección: ${clienteSesion.direccion}`;
+
+    window.open(`https://wa.me/${CONTACTO_WHATSAPP}?text=${encodeURIComponent(mensajePedido)}`, '_blank');
+  }
+</script>
+</body>
+</html>

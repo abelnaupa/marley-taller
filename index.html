@@ -335,7 +335,7 @@
 <script>
   const MAKE_WEBHOOK_URL = "https://hook.us2.make.com/pbefg0illwjlgy5hte5dfwbt5uwvfbso";
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyyj7YOm6lHD2pClkGe32Bw2FME5JUT_6JkZyx0u82AELyOzTAFwdOkYBfl69-VTfc4/exec";
-  const BOT_TELEGRAM_USERNAME = "TuMarleyBot"; // Reemplaza por el nombre de tu bot en Telegram (sin el @)
+  const TELEGRAM_CONTACTO = "56984315107"; // Número de teléfono o Usuario de Telegram al que redirigir
 
   let clienteSesion = null;
 
@@ -459,7 +459,7 @@
     }
   });
 
-  // REGISTRO DE NUEVO CLIENTE
+  // REGISTRO DE NUEVO CLIENTE (REDIRECCIÓN A CHAT TELEGRAM)
   document.getElementById('formRegistroB2B').addEventListener('submit', function(e) {
     e.preventDefault();
 
@@ -485,9 +485,10 @@
       body: JSON.stringify(clienteSesion)
     }).catch(err => console.log('Procesado localmente'));
 
-    alert(`¡Registro exitoso! Bienvenido ${clienteSesion.nombre}. Serás redirigido a Telegram para activar las notificaciones de tu bot.`);
+    alert(`¡Registro exitoso! Bienvenido ${clienteSesion.nombre}. Serás redirigido al chat de Telegram.`);
 
-    window.open(`https://t.me/${BOT_TELEGRAM_USERNAME}?start=${clienteSesion.telefono}`, '_blank');
+    // Abre el chat directo en Telegram
+    window.open(`https://t.me/${TELEGRAM_CONTACTO}`, '_blank');
 
     navigateToModel(clienteSesion.modelo);
   });
@@ -548,7 +549,7 @@
       fecha: new Date().toLocaleDateString('es-CL') + " " + new Date().toLocaleTimeString('es-CL', {hour: '2-digit', minute:'2-digit'}),
       producto: producto,
       monto: monto,
-      estado: "Enviado a Bot"
+      estado: "Solicitado"
     };
 
     historialActual.unshift(nuevoPedido);
@@ -611,8 +612,8 @@
     // Registrar pedido en el historial local
     guardarPedidoEnHistorial(producto, precio);
 
-    // Abre Telegram para solicitar el pedido a través del bot
-    window.open(`https://t.me/${BOT_TELEGRAM_USERNAME}?start=pedido_${clienteSesion.telefono}`, '_blank');
+    // Abre la conversación directa en Telegram
+    window.open(`https://t.me/${TELEGRAM_CONTACTO}`, '_blank');
   }
 </script>
 </body>

@@ -335,7 +335,6 @@
 <script>
   const MAKE_WEBHOOK_URL = "https://hook.us2.make.com/7xoat5objsowy7gqdrapchjtn8r0vnen";
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyyj7YOm6lHD2pClkGe32Bw2FME5JUT_6JkZyx0u82AELyOzTAFwdOkYBfl69-VTfc4/exec";
-  
   const BOT_TELEGRAM_USERNAME = "marleycoffee_bot"; // Bot de Telegram
 
   let clienteSesion = null;
@@ -460,22 +459,11 @@
     }
   });
 
-  // FUNCIÓN PARA ABRIR TELEGRAM DIRECTO SIN BLOQUEOS
+  // REDIRECCIÓN A TELEGRAM
   function abrirTelegram(parametro) {
     const botClean = BOT_TELEGRAM_USERNAME.replace('@', '');
     const paramClean = String(parametro).replace(/[^a-zA-Z0-9_]/g, '');
-    
-    // Protocolo nativo que abre la app instalada
-    const nativeUrl = `tg://resolve?domain=${botClean}&start=${paramClean}`;
-    const webUrl = `https://t.me/${botClean}?start=${paramClean}`;
-
-    // Intenta abrir la app de Telegram directamente
-    window.location.href = nativeUrl;
-
-    // Respaldo por si no abre la App en 1.5s
-    setTimeout(() => {
-      window.open(webUrl, '_blank');
-    }, 1500);
+    window.open(`https://t.me/${botClean}?start=${paramClean}`, '_blank');
   }
 
   // REGISTRO DE NUEVO CLIENTE
@@ -507,7 +495,7 @@
       body: JSON.stringify(clienteSesion)
     }).catch(err => console.log('Procesado localmente'));
 
-    alert(`¡Registro exitoso! Bienvenido ${clienteSesion.nombre}. Abriendo Telegram para activar tu Bot.`);
+    alert(`¡Registro exitoso! Bienvenido ${clienteSesion.nombre}. Abriendo Telegram para activar tu Bot de reorden.`);
 
     abrirTelegram(clienteSesion.telefono);
 

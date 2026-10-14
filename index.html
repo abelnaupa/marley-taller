@@ -259,7 +259,7 @@
           <div class="calc-stat"><span>Costo Insumo Café (Mes):</span> <strong id="res_costo_mes">$256.365</strong></div>
           <div class="calc-stat"><span>Venta Total Proyectada:</span> <strong id="res_venta_mes">$3.300.000</strong></div>
           <div class="calc-stat highlight"><span>Margen Bruto Estimado:</span> <span id="res_margen">$3.043.635</span></div>
-          <button class="btn" style="width:100%; margin-top:15px; font-size:13px;" onclick="solicitarInsumoCalculado()">Solicitar Stock Recomendado</button>
+          <button class="btn" style="width:100%; margin-top:15px; font-size:13px;" onclick="solicitarInsumoCalculado()">Solicitar Stock Recomendado por Telegram</button>
         </div>
       </div>
     </div>
@@ -335,7 +335,9 @@
 <script>
   const MAKE_WEBHOOK_URL = "https://hook.us2.make.com/pbefg0illwjlgy5hte5dfwbt5uwvfbso";
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyyj7YOm6lHD2pClkGe32Bw2FME5JUT_6JkZyx0u82AELyOzTAFwdOkYBfl69-VTfc4/exec";
-  const CONTACTO_WHATSAPP = "56983570880"; 
+  
+  // ⚠️ REEMPLAZA "NombreDeTuBot" POR EL USERNAME REAL DE TU BOT DE TELEGRAM (sin el @)
+  const BOT_TELEGRAM_USERNAME = "marleycoffee_bot"; 
 
   let clienteSesion = null;
 
@@ -459,7 +461,7 @@
     }
   });
 
-  // REGISTRO DE NUEVO CLIENTE (SANEAMIENTO FLEXIBLE DE TELÉFONO)
+  // REGISTRO DE NUEVO CLIENTE (REDIRECCIÓN A TELEGRAM BOT CON PARÁMETRO /START)
   document.getElementById('formRegistroB2B').addEventListener('submit', function(e) {
     e.preventDefault();
 
@@ -488,11 +490,10 @@
       body: JSON.stringify(clienteSesion)
     }).catch(err => console.log('Procesado localmente'));
 
-    const mensajeReg = `¡Hola! ☕ Acabo de registrarme en el Portal Marley Coffee B2B:\n\n• Empresa: ${clienteSesion.empresa}\n• Encargado: ${clienteSesion.nombre}\n• RUT: ${clienteSesion.rut}\n• Teléfono: ${clienteSesion.telefono}\n• Rubro: ${clienteSesion.modelo}`;
+    alert(`¡Registro exitoso! Bienvenido ${clienteSesion.nombre}. Serás redirigido a Telegram para activar el Bot de reorden e insumos.`);
 
-    alert(`¡Registro exitoso! Bienvenido ${clienteSesion.nombre}. Serás redirigido a WhatsApp para confirmar tu activación.`);
-
-    window.open(`https://wa.me/${CONTACTO_WHATSAPP}?text=${encodeURIComponent(mensajeReg)}`, '_blank');
+    // Abre Telegram con el comando /start indicando el ID/teléfono del usuario
+    window.open(`https://t.me/${BOT_TELEGRAM_USERNAME}?start=${clienteSesion.telefono}`, '_blank');
 
     navigateToModel(clienteSesion.modelo);
   });
@@ -615,9 +616,8 @@
 
     guardarPedidoEnHistorial(producto, precio);
 
-    const mensajePedido = `Hola Marley Coffee B2B ☕\nSolicito el siguiente pedido:\n\n• Producto: ${producto}\n• Monto Estimado: ${precio}\n\nDatos de Envío:\n• Empresa: ${clienteSesion.empresa}\n• RUT: ${clienteSesion.rut}\n• Contacto: ${clienteSesion.nombre}\n• Teléfono: ${clienteSesion.telefono}\n• Dirección: ${clienteSesion.direccion}`;
-
-    window.open(`https://wa.me/${CONTACTO_WHATSAPP}?text=${encodeURIComponent(mensajePedido)}`, '_blank');
+    // Redirige a Telegram enviando el comando de reorden directo
+    window.open(`https://t.me/${BOT_TELEGRAM_USERNAME}?start=pedido_${clienteSesion.telefono}`, '_blank');
   }
 </script>
 </body>

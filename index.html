@@ -336,8 +336,7 @@
   const MAKE_WEBHOOK_URL = "https://hook.us2.make.com/pbefg0illwjlgy5hte5dfwbt5uwvfbso";
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyyj7YOm6lHD2pClkGe32Bw2FME5JUT_6JkZyx0u82AELyOzTAFwdOkYBfl69-VTfc4/exec";
   
-  // ⚠️ REEMPLAZA "NombreDeTuBot" POR EL USERNAME REAL DE TU BOT DE TELEGRAM (sin el @)
-  const BOT_TELEGRAM_USERNAME = "marleycoffee_bot"; 
+  const BOT_TELEGRAM_USERNAME = "marleycoffee_bot"; // Bot de Telegram
 
   let clienteSesion = null;
 
@@ -461,7 +460,25 @@
     }
   });
 
-  // REGISTRO DE NUEVO CLIENTE (REDIRECCIÓN A TELEGRAM BOT CON PARÁMETRO /START)
+  // FUNCIÓN PARA ABRIR TELEGRAM DIRECTO SIN BLOQUEOS
+  function abrirTelegram(parametro) {
+    const botClean = BOT_TELEGRAM_USERNAME.replace('@', '');
+    const paramClean = String(parametro).replace(/[^a-zA-Z0-9_]/g, '');
+    
+    // Protocolo nativo que abre la app instalada
+    const nativeUrl = `tg://resolve?domain=${botClean}&start=${paramClean}`;
+    const webUrl = `https://t.me/${botClean}?start=${paramClean}`;
+
+    // Intenta abrir la app de Telegram directamente
+    window.location.href = nativeUrl;
+
+    // Respaldo por si no abre la App en 1.5s
+    setTimeout(() => {
+      window.open(webUrl, '_blank');
+    }, 1500);
+  }
+
+  // REGISTRO DE NUEVO CLIENTE
   document.getElementById('formRegistroB2B').addEventListener('submit', function(e) {
     e.preventDefault();
 
@@ -490,10 +507,9 @@
       body: JSON.stringify(clienteSesion)
     }).catch(err => console.log('Procesado localmente'));
 
-    alert(`¡Registro exitoso! Bienvenido ${clienteSesion.nombre}. Serás redirigido a Telegram para activar el Bot de reorden e insumos.`);
+    alert(`¡Registro exitoso! Bienvenido ${clienteSesion.nombre}. Abriendo Telegram para activar tu Bot.`);
 
-    // Abre Telegram con el comando /start indicando el ID/teléfono del usuario
-    window.open(`https://t.me/${BOT_TELEGRAM_USERNAME}?start=${clienteSesion.telefono}`, '_blank');
+    abrirTelegram(clienteSesion.telefono);
 
     navigateToModel(clienteSesion.modelo);
   });
@@ -615,9 +631,7 @@
     if (!clienteSesion) return;
 
     guardarPedidoEnHistorial(producto, precio);
-
-    // Redirige a Telegram enviando el comando de reorden directo
-    window.open(`https://t.me/${BOT_TELEGRAM_USERNAME}?start=pedido_${clienteSesion.telefono}`, '_blank');
+    abrirTelegram(`pedido_${clienteSesion.telefono}`);
   }
 </script>
 </body>

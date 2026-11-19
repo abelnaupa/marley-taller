@@ -174,55 +174,78 @@
   </div>
 </div>
 
-<!-- ==================== VISTA 2: REGISTRO ==================== -->
+<!-- ==================== VISTA 2: REGISTRO OPTIMIZADO V1 ==================== -->
 <div id="registro-view" class="view-page">
   <div class="container">
     <div class="form-card">
-      <div class="section-title">REGISTRO OBLIGATORIO DE CLIENTE</div>
-      <h2 style="margin-top:0; color:#fff;">Habilita tu Acceso B2B</h2>
-      <p style="color:var(--muted); font-size:14px; margin-bottom:20px;">Completa tu ficha comercial para desbloquear el portal de tu modelo de negocio.</p>
+      <div class="section-title">ALTA RÁPIDA B2B • MENOS DE 5 MINUTOS</div>
+      <h2 style="margin-top:0; color:#fff;">Habilita tu Cuenta Pausa Marley</h2>
+      <p style="color:var(--muted); font-size:14px; margin-bottom:20px;">
+        Ingresa tus datos básicos para activar tu convenio digital y recibir precios mayoristas al instante.
+      </p>
 
       <form id="formRegistroB2B">
         <div class="form-group">
-          <label>Nombre del Dueño / Encargado *</label>
-          <input type="text" id="reg_nombre" required placeholder="Ej: Carlos Mendoza">
+          <label>RUT Empresa o Titular * <span style="color:var(--accent); font-size:12px;">(Validación automática)</span></label>
+          <input type="text" id="reg_rut" required placeholder="Ej: 76.123.456-K" maxlength="12" oninput="formatearRUT(this)">
         </div>
-        <div class="form-group">
-          <label>RUT del Dueño / Empresa *</label>
-          <input type="text" id="reg_rut" required placeholder="Ej: 76.123.456-K">
-        </div>
+
         <div class="form-group">
           <label>Nombre de la Empresa / Local *</label>
           <input type="text" id="reg_empresa" required placeholder="Ej: Hotel Piloto SpA">
         </div>
+
         <div class="form-group">
-          <label>Teléfono Celular *</label>
-          <input type="tel" id="reg_telefono" required placeholder="Ej: 56912345678 o 912345678">
+          <label>Nombre del Encargado / Comprador *</label>
+          <input type="text" id="reg_nombre" required placeholder="Ej: Carlos Mendoza">
         </div>
+
         <div class="form-group">
-          <label>Dirección del Local / Oficina *</label>
-          <input type="text" id="reg_direccion" required placeholder="Ej: Av. Providencia 1234, Santiago">
+          <label>Teléfono Móvil (Para alertas y pedidos 1-Clic) *</label>
+          <input type="tel" id="reg_telefono" required placeholder="Ej: 912345678">
         </div>
+
         <div class="form-group">
-          <label>Modelo de Negocio / Rubro *</label>
+          <label>Rubro / Canal B2B *</label>
           <select id="reg_modelo" required>
             <option value="">Selecciona tu rubro...</option>
             <option value="HORECA">HORECA (Hoteles, Restaurantes, Cafés)</option>
-            <option value="OCS">OCS (Office Coffee Service)</option>
-            <option value="ESTACIONES">Estaciones de Servicio</option>
-            <option value="PANADERIAS">Panaderías y Pastelerías</option>
+            <option value="OCS">OCS (Oficinas y Corporativo)</option>
+            <option value="ESTACIONES">Estaciones de Servicio y Conveniencia</option>
+            <option value="PANADERIAS">Panaderías y Pastelerías (Barista Bakery)</option>
           </select>
         </div>
-        <div class="form-group">
-          <label>ID de Máquina (Placa QR - Opcional)</label>
-          <input type="text" id="reg_maquina" placeholder="Ej: MKA-2026-001">
+
+        <!-- Campos opcionales colapsables para cero fricción -->
+        <details style="margin-bottom: 16px; border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; background: #0E0F11;">
+          <summary style="cursor: pointer; color: var(--accent); font-size: 13px; font-weight: 600;">
+            + Agregar dirección de despacho o ID de máquina (Opcional)
+          </summary>
+          <div style="margin-top: 12px;">
+            <div class="form-group">
+              <label>Dirección del Local / Oficina</label>
+              <input type="text" id="reg_direccion" placeholder="Ej: Av. Providencia 1234, Santiago">
+            </div>
+            <div class="form-group" style="margin-bottom: 4px;">
+              <label>ID de Máquina (Placa QR)</label>
+              <input type="text" id="reg_maquina" placeholder="Ej: MAQ-2026-001">
+            </div>
+          </div>
+        </details>
+
+        <!-- Cumplimiento Ley 19.628 / 21.719 -->
+        <div class="form-group" style="display:flex; align-items:flex-start; gap:10px; margin-top: 10px;">
+          <input type="checkbox" id="reg_privacidad" required checked style="width:auto; margin-top:4px;">
+          <label for="reg_privacidad" style="font-size:12px; color:#aaa; margin:0; line-height:1.4;">
+            Autorizo el tratamiento de mis datos comerciales para habilitar mi cuenta B2B y soporte técnico conforme a la <strong>Ley N.° 19.628 y N.° 21.719</strong>.
+          </label>
         </div>
-        <button type="submit" class="btn" style="width:100%; margin-top:10px;">Completar Registro e Ingresar</button>
+
+        <button type="submit" class="btn" style="width:100%; margin-top:10px;">Activar Portal B2B e Ingresar →</button>
       </form>
     </div>
   </div>
 </div>
-
 <!-- ==================== VISTA 3: LANDINGS INDEPENDIENTES Y SECCIONES B2B ==================== -->
 
 <div id="landing-HORECA" class="view-page">
@@ -332,12 +355,25 @@
 </div>
 
 <!-- ==================== LÓGICA Y JAVASCRIPT ==================== -->
+<!-- ==================== LÓGICA Y JAVASCRIPT ==================== -->
 <script>
   const MAKE_WEBHOOK_URL = "https://hook.us2.make.com/7xoat5objsowy7gqdrapchjtn8r0vnen";
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyyj7YOm6lHD2pClkGe32Bw2FME5JUT_6JkZyx0u82AELyOzTAFwdOkYBfl69-VTfc4/exec";
   const BOT_TELEGRAM_USERNAME = "marleycoffe_bot"; // Bot de Telegram
 
   let clienteSesion = null;
+
+  // FORMATEO AUTOMÁTICO DE RUT CHILENO
+  function formatearRUT(input) {
+    let valor = input.value.replace(/[^0-9kK]/g, '').toUpperCase();
+    if (valor.length > 1) {
+      const cuerpo = valor.slice(0, -1).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+      const dv = valor.slice(-1);
+      input.value = `${cuerpo}-${dv}`;
+    } else {
+      input.value = valor;
+    }
+  }
 
   const catalogosPorModelo = {
     "HORECA": [
@@ -466,7 +502,7 @@
     window.open(`https://t.me/${botClean}?start=${paramClean}`, '_blank');
   }
 
-  // REGISTRO DE NUEVO CLIENTE
+  // REGISTRO DE NUEVO CLIENTE (VERSIÓN V1 SIN FRICCIÓN)
   document.getElementById('formRegistroB2B').addEventListener('submit', function(e) {
     e.preventDefault();
 
@@ -476,13 +512,15 @@
     }
 
     clienteSesion = {
-      nombre: document.getElementById('reg_nombre').value,
-      rut: document.getElementById('reg_rut').value,
-      empresa: document.getElementById('reg_empresa').value,
+      nombre: document.getElementById('reg_nombre').value.trim(),
+      rut: document.getElementById('reg_rut').value.trim(),
+      empresa: document.getElementById('reg_empresa').value.trim(),
       telefono: telInput,
-      direccion: document.getElementById('reg_direccion').value,
+      direccion: document.getElementById('reg_direccion').value.trim() || 'Por confirmar en primer despacho',
       modelo: document.getElementById('reg_modelo').value,
-      maquina: document.getElementById('reg_maquina').value || 'MKA-GENERAL',
+      maquina: document.getElementById('reg_maquina').value.trim() || 'MAQ-PENDIENTE',
+      estado_cuenta: 'Aprobación Temporal (<5 min)',
+      consentimiento_datos: true,
       fecha_registro: new Date().toISOString()
     };
 
@@ -495,10 +533,9 @@
       body: JSON.stringify(clienteSesion)
     }).catch(err => console.log('Procesado localmente'));
 
-    alert(`¡Registro exitoso! Bienvenido ${clienteSesion.nombre}. Abriendo Telegram para activar tu Bot de reorden.`);
+    alert(`¡Cuenta activada, ${clienteSesion.empresa}!\nTu acceso B2B está listo. Abriendo Telegram para vincular tu canal de reorden 1-Clic.`);
 
     abrirTelegram(clienteSesion.telefono);
-
     navigateToModel(clienteSesion.modelo);
   });
 
